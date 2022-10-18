@@ -1,0 +1,160 @@
+$content-max-width: 600px;
+
+.content-container {
+  max-width: $content-max-width;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto;
+  justify-items: center;
+  gap: 1em;
+
+  .game-title {
+    color: darkolivegreen;
+  }
+
+  .button-new-game {
+    font-size: 1rem;
+    padding: 1em 1.5em;
+    color: darkolivegreen;
+    background-color: floralwhite;
+    border: 1px solid green;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 1px seagreen;
+    cursor: pointer;
+
+    &:active {
+      color: white;
+      background-color: darkseagreen;
+    }
+  }
+
+  .cells-container {
+    justify-self: stretch;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5em;
+    border: 1px solid seagreen;
+    border-radius: 5px;
+    padding: 0.5em;
+    background-color: wheat;
+    font-family: "Courier New", Courier, monospace;
+    box-shadow: 0px 0px 3px 2px brown;
+
+    .cell {
+      padding: 8px;
+      aspect-ratio: 1;
+      border: 1px solid brown;
+      border-radius: 5px;
+      display: grid;
+      justify-content: center;
+      align-content: center;
+      background-color: floralwhite;
+      box-shadow: 0px 0px 3px 1px brown;
+
+      span {
+        display: grid;
+        justify-content: center;
+        align-content: center;
+        line-height: 1;
+      }
+    }
+
+    .cell-2,
+    .cell-4,
+    .cell-8 {
+      font-size: 48px;
+    }
+
+    .cell-16,
+    .cell-32,
+    .cell-64 {
+      font-size: 40px;
+    }
+
+    .cell-128,
+    .cell-256,
+    .cell-512 {
+      font-size: 34px;
+    }
+
+    .cell-1024,
+    .cell-2048,
+    .cell-4096,
+    .cell-8192 {
+      color: floralwhite;
+      font-size: 28px;
+    }
+
+    .cell-16384,
+    .cell-32768,
+    .cell-65536 {
+      color: floralwhite;
+      font-size: 22px;
+    }
+
+    .cell-2 {
+      background-color: white;
+    }
+
+    .cell-4 {
+      background-color: linen;
+    }
+
+    .cell-8 {
+      background-color: lemonchiffon;
+    }
+
+    .cell-16 {
+      background-color: aqua;
+    }
+
+    .cell-32 {
+      background-color: gainsboro;
+    }
+
+    .cell-64 {
+      background-color: lightskyblue;
+    }
+
+    .cell-128 {
+      background-color: springgreen;
+    }
+
+    .cell-256 {
+      background-color: yellow;
+    }
+
+    .cell-512 {
+      color: white;
+      background-color: orange;
+    }
+
+    .cell-1024 {
+      background-color: forestgreen;
+    }
+
+    .cell-2048 {
+      background-color: sienna;
+    }
+
+    .cell-4096 {
+      background-color: teal;
+    }
+
+    .cell-8192 {
+      background-color: fuchsia;
+    }
+
+    .cell-16384 {
+      background-color: deeppink;
+    }
+
+    .cell-32768 {
+      background-color: purple;
+    }
+
+    .cell-65536 {
+      background-color: maroon;
+    }
+  }
+}
