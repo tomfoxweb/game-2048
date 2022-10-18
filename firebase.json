@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/game-2048",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
