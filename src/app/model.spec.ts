@@ -136,4 +136,53 @@ describe('Model: new game', () => {
       expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe('add 2 and 4 cells', () => {
+    beforeEach(() => {
+      testingMap = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      firstRow = 3;
+      firstColumn = 1;
+      firstNewCell = 2;
+      secondRow = 0;
+      secondColumn = 2;
+      secondNewCell = 4;
+
+      spyOn(randomizer, 'randomRow').and.returnValues(firstRow, secondRow);
+      spyOn(randomizer, 'randomColumn').and.returnValues(
+        firstColumn,
+        secondColumn
+      );
+      spyOn(randomizer, 'randomNewCell').and.returnValues(
+        firstNewCell,
+        secondNewCell
+      );
+      testingMap[firstRow][firstColumn] = firstNewCell;
+      testingMap[secondRow][secondColumn] = secondNewCell;
+      model = new Model(view, randomizer);
+      model.newGame();
+    });
+
+    it('should add 2 and 4 cells', () => {
+      for (const row of RowValues) {
+        for (const column of ColumnValues) {
+          expect(view.setCell).toHaveBeenCalledWith(
+            row,
+            column,
+            testingMap[row][column]
+          );
+        }
+      }
+    });
+
+    it('should call randomRow, randomColumn and RandomNewCell', () => {
+      expect(randomizer.randomRow).toHaveBeenCalledTimes(2);
+      expect(randomizer.randomColumn).toHaveBeenCalledTimes(2);
+      expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
+    });
+  });
 });
