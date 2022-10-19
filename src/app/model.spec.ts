@@ -235,3 +235,44 @@ describe('Model: new game', () => {
     });
   });
 });
+
+describe('Model: shift', () => {
+  let view: Viewable;
+  let model: Model;
+  let randomizer: TestRandom;
+  let testingMap: Cell[][];
+  let spyViewSetCell: any;
+
+  beforeEach(() => {
+    const row1: Row = 1;
+    const col1: Column = 1;
+    const cell1: Cell = 2;
+    const row2: Row = 2;
+    const col2: Column = 2;
+    const cell2: Cell = 4;
+    testingMap = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    testingMap[row1][col1] = cell1;
+    testingMap[row2][col2] = cell2;
+    view = new TestView();
+    spyViewSetCell = spyOn(view, 'setCell');
+    randomizer = new TestRandom();
+    spyOn(randomizer, 'randomRow').and.returnValues(row1, row2);
+    spyOn(randomizer, 'randomColumn').and.returnValues(col1, col2);
+    spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
+    model = new Model(view, randomizer);
+    spyViewSetCell.calls.reset();
+  });
+
+  it('should shift up cells', () => {
+    model.shiftUp();
+    expect(spyViewSetCell).toHaveBeenCalledWith(0, 1, 2);
+    expect(spyViewSetCell).toHaveBeenCalledWith(1, 1, 0);
+    expect(spyViewSetCell).toHaveBeenCalledWith(0, 2, 4);
+    expect(spyViewSetCell).toHaveBeenCalledWith(2, 2, 0);
+  });
+});
