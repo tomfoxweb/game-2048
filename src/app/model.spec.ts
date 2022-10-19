@@ -141,6 +141,14 @@ describe('Model: shift', () => {
       cell1: 2,
       cell2: 4,
     },
+    {
+      title: 'shift right',
+      fnName: 'right',
+      endPosition1: { row: 1, column: 3 },
+      endPosition2: { row: 2, column: 3 },
+      cell1: 2,
+      cell2: 4,
+    },
   ];
 
   beforeEach(() => {
@@ -177,6 +185,9 @@ describe('Model: shift', () => {
       switch (test.fnName) {
         case 'up':
           model.shiftUp();
+          break;
+        case 'right':
+          model.shiftRight();
           break;
       }
 

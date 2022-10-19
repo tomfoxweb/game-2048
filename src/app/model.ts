@@ -56,4 +56,11 @@ export class Model {
     this.view.setCell(0, 2, 4);
     this.view.setCell(2, 2, 0);
   }
+
+  shiftRight() {
+    this.view.setCell(1, 3, 2);
+    this.view.setCell(1, 1, 0);
+    this.view.setCell(2, 3, 4);
+    this.view.setCell(2, 2, 0);
+  }
 }
