@@ -25,55 +25,50 @@ class TestRandom implements Randomable {
 describe('Model: new game', () => {
   let view: Viewable;
   let randomizer: TestRandom;
-  let row1: Row = 1;
-  let col1: Column = 2;
-  let row2: Row = 3;
-  let col2: Column = 0;
+  let firstRandomRow: Row;
+  let firstRandomColumn: Column;
+  let secondRandomRow: Row;
+  let secondRandomColumn: Column;
   let model: Model;
 
   beforeEach(() => {
     view = new TestView();
     spyOn(view, 'setCell');
     randomizer = new TestRandom();
-    randomizer.valuesRow.push(row1, row2);
-    randomizer.valuesColumn.push(col1, col2);
-    model = new Model(view, randomizer);
-    model.newGame();
   });
 
-  it('should set 16 cells by view.setCell', () => {
-    expect(view.setCell).toHaveBeenCalledTimes(16);
-  });
+  describe('add two 2 cells', () => {
+    let testingMap: Cell[][];
 
-  it('should set all cells in row column combinations', () => {
-    for (const row of RowValues) {
-      for (const column of ColumnValues) {
-        expect(view.setCell).toHaveBeenCalledWith(
-          row,
-          column,
-          jasmine.anything()
-        );
+    beforeEach(() => {
+      testingMap = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ];
+      firstRandomRow = 1;
+      firstRandomColumn = 2;
+      secondRandomRow = 3;
+      secondRandomColumn = 0;
+      randomizer.valuesRow = [firstRandomRow, secondRandomRow];
+      randomizer.valuesColumn = [firstRandomColumn, secondRandomColumn];
+      testingMap[firstRandomRow][firstRandomColumn] = 2;
+      testingMap[secondRandomRow][secondRandomColumn] = 2;
+      model = new Model(view, randomizer);
+      model.newGame();
+    });
+
+    it('should add two 2 cells', () => {
+      for (const row of RowValues) {
+        for (const column of ColumnValues) {
+          expect(view.setCell).toHaveBeenCalledWith(
+            row,
+            column,
+            testingMap[row][column]
+          );
+        }
       }
-    }
-  });
-
-  it('should add two 2 cells', () => {
-    const testingMap: Cell[][] = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    testingMap[row1][col1] = 2;
-    testingMap[row2][col2] = 2;
-    for (const row of RowValues) {
-      for (const column of ColumnValues) {
-        expect(view.setCell).toHaveBeenCalledWith(
-          row,
-          column,
-          testingMap[row][column]
-        );
-      }
-    }
+    });
   });
 });
