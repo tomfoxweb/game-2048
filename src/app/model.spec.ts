@@ -111,40 +111,95 @@ describe('Model: new game', () => {
   });
 });
 
+interface ShiftTest {
+  title: string;
+  fnName: 'up' | 'right' | 'down' | 'left';
+  endPosition1: Position;
+  endPosition2: Position;
+  cell1: NewCell;
+  cell2: NewCell;
+}
+
 describe('Model: shift', () => {
   let view: Viewable;
   let model: Model;
   let randomizer: TestRandom;
-  let testingMap: Cell[][];
+  let spyPosition: any;
+  let spyCell: any;
   let spyViewSetCell: any;
+  const startPos1: Position = { row: 1, column: 1 };
+  const startPos2: Position = { row: 2, column: 2 };
+  const cell1: Cell = 2;
+  const cell2: Cell = 4;
+
+  const tests: ShiftTest[] = [
+    {
+      title: 'shift up',
+      fnName: 'up',
+      endPosition1: { row: 0, column: 1 },
+      endPosition2: { row: 0, column: 2 },
+      cell1: 2,
+      cell2: 4,
+    },
+  ];
 
   beforeEach(() => {
-    const row1: Row = 1;
-    const col1: Column = 1;
-    const cell1: Cell = 2;
-    const row2: Row = 2;
-    const col2: Column = 2;
-    const cell2: Cell = 4;
-    testingMap = [
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-    ];
-    testingMap[row1][col1] = cell1;
-    testingMap[row2][col2] = cell2;
     view = new TestView();
     spyViewSetCell = spyOn(view, 'setCell');
     randomizer = new TestRandom();
+    spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+      startPos1,
+      startPos2
+    );
+    spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
     model = new Model(view, randomizer);
+    model.newGame();
     spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
   });
 
-  it('should shift up cells', () => {
-    model.shiftUp();
-    expect(spyViewSetCell).toHaveBeenCalledWith(0, 1, 2);
-    expect(spyViewSetCell).toHaveBeenCalledWith(1, 1, 0);
-    expect(spyViewSetCell).toHaveBeenCalledWith(0, 2, 4);
-    expect(spyViewSetCell).toHaveBeenCalledWith(2, 2, 0);
+  afterEach(() => {
+    spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
+  });
+
+  tests.forEach((test) => {
+    it(test.title, () => {
+      randomizer.randomPosition = jasmine
+        .createSpy()
+        .and.returnValues(test.endPosition1, test.endPosition2);
+      randomizer.randomNewCell = jasmine
+        .createSpy()
+        .and.returnValues(test.cell1, test.cell2);
+
+      switch (test.fnName) {
+        case 'up':
+          model.shiftUp();
+          break;
+      }
+
+      expect(view.setCell).toHaveBeenCalledWith(
+        test.endPosition1.row,
+        test.endPosition1.column,
+        test.cell1
+      );
+      expect(view.setCell).toHaveBeenCalledWith(
+        startPos1.row,
+        startPos1.column,
+        0
+      );
+      expect(view.setCell).toHaveBeenCalledWith(
+        test.endPosition1.row,
+        test.endPosition1.column,
+        test.cell1
+      );
+      expect(view.setCell).toHaveBeenCalledWith(
+        startPos2.row,
+        startPos2.column,
+        0
+      );
+    });
   });
 });
