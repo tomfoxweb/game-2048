@@ -70,4 +70,11 @@ export class Model {
     this.view.setCell(3, 2, 4);
     this.view.setCell(2, 2, 0);
   }
+
+  shiftLeft() {
+    this.view.setCell(1, 0, 2);
+    this.view.setCell(1, 1, 0);
+    this.view.setCell(2, 0, 4);
+    this.view.setCell(2, 2, 0);
+  }
 }
