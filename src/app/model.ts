@@ -29,8 +29,10 @@ export class Model {
     const col1 = this.randomizer.randomColumn();
     const row2 = this.randomizer.randomRow();
     const col2 = this.randomizer.randomColumn();
-    this.cellMap[row1][col1] = 2;
-    this.cellMap[row2][col2] = 2;
+    const cell1 = this.randomizer.randomNewCell();
+    const cell2 = this.randomizer.randomNewCell();
+    this.cellMap[row1][col1] = cell1;
+    this.cellMap[row2][col2] = cell2;
     for (const row of RowValues) {
       for (const column of ColumnValues) {
         this.view.setCell(row, column, this.cellMap[row][column]);
