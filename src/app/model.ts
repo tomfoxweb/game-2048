@@ -1,4 +1,4 @@
-import { ViewChild } from '@angular/core';
+import { ColumnValues, RowValues } from './cell';
 import { Viewable } from './viewable';
 
 export class Model {
@@ -8,8 +8,10 @@ export class Model {
   }
 
   newGame(): void {
-    for (let i = 0; i < 16; i++) {
-      this.view.setCell(0, 0, 0);
+    for (const row of RowValues) {
+      for (const column of ColumnValues) {
+        this.view.setCell(row, column, 0);
+      }
     }
   }
 }

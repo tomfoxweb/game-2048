@@ -1,3 +1,4 @@
+import { Cell, CellValues, ColumnValues, RowValues } from './cell';
 import { Model } from './model';
 import { Viewable } from './viewable';
 
@@ -39,5 +40,17 @@ describe('Model: new game', () => {
 
   it('should set 16 cells by view.setCell', () => {
     expect(view.setCell).toHaveBeenCalledTimes(16);
+  });
+
+  it('should set all cells in row column combinations', () => {
+    for (const row of RowValues) {
+      for (const column of ColumnValues) {
+        expect(view.setCell).toHaveBeenCalledWith(
+          row,
+          column,
+          jasmine.anything()
+        );
+      }
+    }
   });
 });
