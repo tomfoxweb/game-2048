@@ -1,14 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Cell, Column, ColumnValues, Row, RowValues } from './cell';
+import { ControllerService } from './controller.service';
+import { Viewable } from './viewable';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, Viewable {
   title = 'game-2048';
-  cells = [
-    2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768,
-    65536,
-  ];
+  cells: Cell[] = [];
+
+  constructor(private controller: ControllerService) {}
+
+  ngOnInit(): void {
+    for (const row of RowValues) {
+      for (const column of ColumnValues) {
+        this.cells.push(0);
+      }
+    }
+    this.controller.setView(this);
+    this.newGame();
+  }
+
+  setCell(row: Row, column: Column, cell: Cell): void {
+    const index = row * 4 + column;
+    this.cells[index] = cell;
+  }
+
+  newGame(): void {
+    this.controller.newGame();
+  }
 }

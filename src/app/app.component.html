@@ -1,6 +1,6 @@
 <div class="content-container">
   <h1 class="game-title">Game 2048</h1>
-  <button class="button-new-game">New Game</button>
+  <button class="button-new-game" (click)="newGame()">New Game</button>
   <div class="cells-container">
     <div
       class="cell"
@@ -22,7 +22,7 @@
       [class.cell-32768]="item === 32768"
       [class.cell-65536]="item === 65536"
     >
-      <span>{{ item }}</span>
+      <span [class.empty-cell]="item === 0">{{ item }}</span>
     </div>
   </div>
 </div>

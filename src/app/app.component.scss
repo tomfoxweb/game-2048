@@ -56,6 +56,10 @@ $content-max-width: 600px;
         justify-content: center;
         align-content: center;
         line-height: 1;
+
+        &.empty-cell {
+          visibility: hidden;
+        }
       }
     }
 
