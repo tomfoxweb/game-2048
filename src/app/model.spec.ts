@@ -1,40 +1,43 @@
-import { Cell, CellValues, ColumnValues, RowValues } from './cell';
+import { Cell, Column, ColumnValues, Row, RowValues } from './cell';
 import { Model } from './model';
+import { Randomable } from './randomable';
 import { Viewable } from './viewable';
 
 class TestView implements Viewable {
-  setCell(
-    row: 0 | 2 | 1 | 3,
-    column: 0 | 2 | 1 | 3,
-    cell:
-      | 0
-      | 2
-      | 4
-      | 8
-      | 16
-      | 32
-      | 64
-      | 128
-      | 256
-      | 512
-      | 1024
-      | 2048
-      | 4096
-      | 8192
-      | 16384
-      | 32768
-      | 65536
-  ): void {}
+  setCell(row: Row, column: Column, cell: Cell): void {}
+}
+
+class TestRandom implements Randomable {
+  indexRow = 0;
+  indexColumn = 0;
+  valuesRow: Row[] = [];
+  valuesColumn: Column[] = [];
+
+  randomRow(): Row {
+    return this.valuesRow[this.indexRow++];
+  }
+
+  randomColumn(): Column {
+    return this.valuesColumn[this.indexColumn++];
+  }
 }
 
 describe('Model: new game', () => {
   let view: Viewable;
+  let randomizer: TestRandom;
+  let row1: Row = 1;
+  let col1: Column = 2;
+  let row2: Row = 3;
+  let col2: Column = 0;
   let model: Model;
 
   beforeEach(() => {
     view = new TestView();
     spyOn(view, 'setCell');
-    model = new Model(view);
+    randomizer = new TestRandom();
+    randomizer.valuesRow.push(row1, row2);
+    randomizer.valuesColumn.push(col1, col2);
+    model = new Model(view, randomizer);
     model.newGame();
   });
 
@@ -49,6 +52,26 @@ describe('Model: new game', () => {
           row,
           column,
           jasmine.anything()
+        );
+      }
+    }
+  });
+
+  it('should add two 2 cells', () => {
+    const testingMap: Cell[][] = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+    testingMap[row1][col1] = 2;
+    testingMap[row2][col2] = 2;
+    for (const row of RowValues) {
+      for (const column of ColumnValues) {
+        expect(view.setCell).toHaveBeenCalledWith(
+          row,
+          column,
+          testingMap[row][column]
         );
       }
     }
