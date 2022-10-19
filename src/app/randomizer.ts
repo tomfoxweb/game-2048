@@ -1,13 +1,9 @@
-import { Column, ColumnValues, NewCell, Row, RowValues } from './cell';
+import { NewCell, Position } from './cell';
 import { Randomable } from './randomable';
 
 export class Randomizer implements Randomable {
-  randomRow(): Row {
-    return this.randomInteger(0, RowValues.length - 1) as Row;
-  }
-
-  randomColumn(): Column {
-    return this.randomInteger(0, ColumnValues.length - 1) as Column;
+  randomPosition(emptyPositions: Position[]): Position {
+    return emptyPositions[this.randomInteger(0, emptyPositions.length - 1)];
   }
 
   randomNewCell(): NewCell {

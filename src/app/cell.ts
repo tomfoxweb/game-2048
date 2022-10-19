@@ -7,5 +7,6 @@ export const CellValues = [
 
 export type Row = typeof RowValues[number];
 export type Column = typeof ColumnValues[number];
+export type Position = { row: Row; column: Column };
 export type Cell = typeof CellValues[number];
 export type NewCell = 2 | 4;

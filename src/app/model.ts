@@ -1,4 +1,4 @@
-import { Cell, ColumnValues, RowValues } from './cell';
+import { Cell, ColumnValues, Position, RowValues } from './cell';
 import { Randomable } from './randomable';
 import { Viewable } from './viewable';
 
@@ -6,6 +6,7 @@ export class Model {
   private view: Viewable;
   private randomizer: Randomable;
   private cellMap: Cell[][];
+  private emptyPositions: Position[];
 
   constructor(view: Viewable, randomizer: Randomable) {
     this.view = view;
@@ -17,22 +18,31 @@ export class Model {
         this.cellMap[row].push(0);
       }
     }
+    this.emptyPositions = [];
   }
 
   newGame(): void {
+    this.emptyPositions = [];
     for (const row of RowValues) {
       for (const column of ColumnValues) {
         this.cellMap[row][column] = 0;
+        this.emptyPositions.push({ row, column });
       }
     }
-    const row1 = this.randomizer.randomRow();
-    const col1 = this.randomizer.randomColumn();
-    const row2 = this.randomizer.randomRow();
-    const col2 = this.randomizer.randomColumn();
+    const pos1 = this.randomizer.randomPosition(this.emptyPositions);
+    const delIndex1 = this.emptyPositions.findIndex(
+      (x) => x.row === pos1.row && x.column === pos1.column
+    );
+    this.emptyPositions.splice(delIndex1, 1);
+    const pos2 = this.randomizer.randomPosition(this.emptyPositions);
+    const delIndex2 = this.emptyPositions.findIndex(
+      (x) => x.row === pos2.row && x.column === pos2.column
+    );
+    this.emptyPositions.splice(delIndex2, 1);
     const cell1 = this.randomizer.randomNewCell();
     const cell2 = this.randomizer.randomNewCell();
-    this.cellMap[row1][col1] = cell1;
-    this.cellMap[row2][col2] = cell2;
+    this.cellMap[pos1.row][pos1.column] = cell1;
+    this.cellMap[pos2.row][pos2.column] = cell2;
     for (const row of RowValues) {
       for (const column of ColumnValues) {
         this.view.setCell(row, column, this.cellMap[row][column]);

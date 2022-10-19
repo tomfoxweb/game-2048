@@ -1,7 +1,6 @@
-import { Column, NewCell, Row } from './cell';
+import { NewCell, Position } from './cell';
 
 export interface Randomable {
-  randomRow(): Row;
-  randomColumn(): Column;
+  randomPosition(emptyPositions: Position[]): Position;
   randomNewCell(): NewCell;
 }

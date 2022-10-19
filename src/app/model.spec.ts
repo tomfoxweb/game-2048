@@ -1,4 +1,12 @@
-import { Cell, Column, ColumnValues, NewCell, Row, RowValues } from './cell';
+import {
+  Cell,
+  Column,
+  ColumnValues,
+  NewCell,
+  Position,
+  Row,
+  RowValues,
+} from './cell';
 import { Model } from './model';
 import { Randomable } from './randomable';
 import { Viewable } from './viewable';
@@ -8,12 +16,8 @@ class TestView implements Viewable {
 }
 
 class TestRandom implements Randomable {
-  randomRow(): Row {
-    return 0;
-  }
-
-  randomColumn(): Column {
-    return 0;
+  randomPosition(emptyPositions: Position[]): Position {
+    return emptyPositions[0];
   }
 
   randomNewCell(): NewCell {
@@ -21,55 +25,77 @@ class TestRandom implements Randomable {
   }
 }
 
+interface NewGameTest {
+  title: string;
+  position1: Position;
+  position2: Position;
+  cell1: NewCell;
+  cell2: NewCell;
+}
+
 describe('Model: new game', () => {
+  const tests: NewGameTest[] = [
+    {
+      title: 'add two 2 cells',
+      position1: { row: 1, column: 2 },
+      position2: { row: 3, column: 0 },
+      cell1: 2,
+      cell2: 2,
+    },
+    {
+      title: 'add two 4 cells',
+      position1: { row: 2, column: 3 },
+      position2: { row: 0, column: 1 },
+      cell1: 4,
+      cell2: 4,
+    },
+    {
+      title: 'add 2 and 4 cells',
+      position1: { row: 3, column: 1 },
+      position2: { row: 1, column: 2 },
+      cell1: 2,
+      cell2: 4,
+    },
+    {
+      title: 'add 4 and 2 cells',
+      position1: { row: 0, column: 0 },
+      position2: { row: 2, column: 3 },
+      cell1: 4,
+      cell2: 2,
+    },
+  ];
   let view: Viewable;
   let model: Model;
   let randomizer: TestRandom;
-  let firstRow: Row;
-  let firstColumn: Column;
-  let firstNewCell: NewCell;
-  let secondRow: Row;
-  let secondColumn: Column;
-  let secondNewCell: NewCell;
   let testingMap: Cell[][];
+  let spyPosition: any;
 
   beforeEach(() => {
     view = new TestView();
     spyOn(view, 'setCell');
+    testingMap = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     randomizer = new TestRandom();
   });
 
-  describe('add two 2 cells', () => {
-    beforeEach(() => {
-      testingMap = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
-      firstRow = 1;
-      firstColumn = 2;
-      firstNewCell = 2;
-      secondRow = 3;
-      secondColumn = 0;
-      secondNewCell = 2;
-
-      spyOn(randomizer, 'randomRow').and.returnValues(firstRow, secondRow);
-      spyOn(randomizer, 'randomColumn').and.returnValues(
-        firstColumn,
-        secondColumn
+  tests.forEach((test) => {
+    it(test.title, () => {
+      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+        test.position1,
+        test.position2
       );
       spyOn(randomizer, 'randomNewCell').and.returnValues(
-        firstNewCell,
-        secondNewCell
+        test.cell1,
+        test.cell2
       );
-      testingMap[firstRow][firstColumn] = firstNewCell;
-      testingMap[secondRow][secondColumn] = secondNewCell;
+      testingMap[test.position1.row][test.position1.column] = test.cell1;
+      testingMap[test.position2.row][test.position2.column] = test.cell2;
       model = new Model(view, randomizer);
       model.newGame();
-    });
-
-    it('should add two 2 cells', () => {
       for (const row of RowValues) {
         for (const column of ColumnValues) {
           expect(view.setCell).toHaveBeenCalledWith(
@@ -79,158 +105,7 @@ describe('Model: new game', () => {
           );
         }
       }
-    });
-
-    it('should call randomRow, randomColumn and RandomNewCell', () => {
-      expect(randomizer.randomRow).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomColumn).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('add two 4 cells', () => {
-    beforeEach(() => {
-      testingMap = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
-      firstRow = 2;
-      firstColumn = 3;
-      firstNewCell = 4;
-      secondRow = 1;
-      secondColumn = 1;
-      secondNewCell = 4;
-
-      spyOn(randomizer, 'randomRow').and.returnValues(firstRow, secondRow);
-      spyOn(randomizer, 'randomColumn').and.returnValues(
-        firstColumn,
-        secondColumn
-      );
-      spyOn(randomizer, 'randomNewCell').and.returnValues(
-        firstNewCell,
-        secondNewCell
-      );
-      testingMap[firstRow][firstColumn] = firstNewCell;
-      testingMap[secondRow][secondColumn] = secondNewCell;
-      model = new Model(view, randomizer);
-      model.newGame();
-    });
-
-    it('should add two 4 cells', () => {
-      for (const row of RowValues) {
-        for (const column of ColumnValues) {
-          expect(view.setCell).toHaveBeenCalledWith(
-            row,
-            column,
-            testingMap[row][column]
-          );
-        }
-      }
-    });
-
-    it('should call randomRow, randomColumn and RandomNewCell', () => {
-      expect(randomizer.randomRow).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomColumn).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('add 2 and 4 cells', () => {
-    beforeEach(() => {
-      testingMap = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
-      firstRow = 3;
-      firstColumn = 1;
-      firstNewCell = 2;
-      secondRow = 0;
-      secondColumn = 2;
-      secondNewCell = 4;
-
-      spyOn(randomizer, 'randomRow').and.returnValues(firstRow, secondRow);
-      spyOn(randomizer, 'randomColumn').and.returnValues(
-        firstColumn,
-        secondColumn
-      );
-      spyOn(randomizer, 'randomNewCell').and.returnValues(
-        firstNewCell,
-        secondNewCell
-      );
-      testingMap[firstRow][firstColumn] = firstNewCell;
-      testingMap[secondRow][secondColumn] = secondNewCell;
-      model = new Model(view, randomizer);
-      model.newGame();
-    });
-
-    it('should add 2 and 4 cells', () => {
-      for (const row of RowValues) {
-        for (const column of ColumnValues) {
-          expect(view.setCell).toHaveBeenCalledWith(
-            row,
-            column,
-            testingMap[row][column]
-          );
-        }
-      }
-    });
-
-    it('should call randomRow, randomColumn and RandomNewCell', () => {
-      expect(randomizer.randomRow).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomColumn).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('add 4 and 2 cells', () => {
-    beforeEach(() => {
-      testingMap = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ];
-      firstRow = 0;
-      firstColumn = 0;
-      firstNewCell = 4;
-      secondRow = 2;
-      secondColumn = 3;
-      secondNewCell = 2;
-
-      spyOn(randomizer, 'randomRow').and.returnValues(firstRow, secondRow);
-      spyOn(randomizer, 'randomColumn').and.returnValues(
-        firstColumn,
-        secondColumn
-      );
-      spyOn(randomizer, 'randomNewCell').and.returnValues(
-        firstNewCell,
-        secondNewCell
-      );
-      testingMap[firstRow][firstColumn] = firstNewCell;
-      testingMap[secondRow][secondColumn] = secondNewCell;
-      model = new Model(view, randomizer);
-      model.newGame();
-    });
-
-    it('should add 4 and 2 cells', () => {
-      for (const row of RowValues) {
-        for (const column of ColumnValues) {
-          expect(view.setCell).toHaveBeenCalledWith(
-            row,
-            column,
-            testingMap[row][column]
-          );
-        }
-      }
-    });
-
-    it('should call randomRow, randomColumn and RandomNewCell', () => {
-      expect(randomizer.randomRow).toHaveBeenCalledTimes(2);
-      expect(randomizer.randomColumn).toHaveBeenCalledTimes(2);
+      expect(spyPosition).toHaveBeenCalled();
       expect(randomizer.randomNewCell).toHaveBeenCalledTimes(2);
     });
   });
@@ -261,9 +136,6 @@ describe('Model: shift', () => {
     view = new TestView();
     spyViewSetCell = spyOn(view, 'setCell');
     randomizer = new TestRandom();
-    spyOn(randomizer, 'randomRow').and.returnValues(row1, row2);
-    spyOn(randomizer, 'randomColumn').and.returnValues(col1, col2);
-    spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
     model = new Model(view, randomizer);
     spyViewSetCell.calls.reset();
   });
