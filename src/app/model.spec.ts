@@ -477,3 +477,136 @@ describe('Model: shift: already on last line', () => {
     });
   });
 });
+
+describe('Model: shift: multiple move', () => {
+  let view: Viewable;
+  let model: Model;
+  let randomizer: TestRandom;
+  let spyPosition: any;
+  let spyCell: any;
+  let spyViewSetCell: any;
+  const start1: Position = { row: 1, column: 0 };
+  const start2: Position = { row: 3, column: 2 };
+  const cell1: NewCell = 2;
+  const cell2: NewCell = 4;
+
+  const tests: ShiftTest[] = [
+    {
+      title: 'shift up',
+      fnName: 'up',
+      movements: [
+        { begin: { row: 3, column: 0 }, end: { row: 2, column: 0 }, cell: 128 },
+        { begin: { row: 2, column: 1 }, end: { row: 0, column: 1 }, cell: 256 },
+        {
+          begin: { row: 3, column: 1 },
+          end: { row: 1, column: 1 },
+          cell: 1024,
+        },
+        {
+          begin: { row: 1, column: 2 },
+          end: { row: 0, column: 2 },
+          cell: 16,
+        },
+        {
+          begin: { row: 3, column: 2 },
+          end: { row: 1, column: 2 },
+          cell: cell2,
+        },
+        {
+          begin: { row: 1, column: 3 },
+          end: { row: 0, column: 3 },
+          cell: 64,
+        },
+        {
+          begin: { row: 2, column: 3 },
+          end: { row: 1, column: 3 },
+          cell: 512,
+        },
+        {
+          begin: { row: 3, column: 3 },
+          end: { row: 2, column: 3 },
+          cell: 2048,
+        },
+      ],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 0, 0, 0],
+        [0, 0, 16, 64],
+        [0, 256, 0, 512],
+        [128, 1024, 0, 2048],
+      ],
+    },
+  ];
+
+  beforeEach(() => {
+    view = new TestView();
+    spyViewSetCell = spyOn(view, 'setCell');
+    randomizer = new TestRandom();
+    model = new Model(view, randomizer);
+  });
+
+  afterEach(() => {
+    spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
+  });
+
+  afterAll(() => {
+    spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
+  });
+
+  tests.forEach((test) => {
+    it(test.title, () => {
+      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+        start1,
+        start2
+      );
+      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
+        cell1,
+        cell2
+      );
+      model.newGame(test.gameMap);
+      spyViewSetCell.calls.reset();
+      spyPosition.calls.reset();
+      spyCell.calls.reset();
+
+      const endPositions = test.movements.map((movement) => movement.end);
+      randomizer.randomPosition = jasmine
+        .createSpy()
+        .and.returnValues(...endPositions);
+      randomizer.randomNewCell = jasmine
+        .createSpy()
+        .and.returnValues(...test.newCells);
+
+      switch (test.fnName) {
+        case 'up':
+          model.shiftUp();
+          break;
+        case 'right':
+          model.shiftRight();
+          break;
+        case 'down':
+          model.shiftDown();
+          break;
+        case 'left':
+          model.shiftLeft();
+          break;
+      }
+
+      for (const movement of test.movements) {
+        expect(view.setCell).toHaveBeenCalledWith(
+          movement.end.row,
+          movement.end.column,
+          movement.cell
+        );
+        expect(view.setCell).toHaveBeenCalledWith(
+          movement.begin.row,
+          movement.begin.column,
+          0
+        );
+      }
+    });
+  });
+});
