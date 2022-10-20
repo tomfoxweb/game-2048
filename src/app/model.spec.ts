@@ -17,7 +17,7 @@ class TestView implements Viewable {
 }
 
 class TestRandom implements Randomable {
-  randomPosition(emptyPositions: Position[]): Position {
+  randomPosition(emptyPositions: Position[]): Position | null {
     return emptyPositions[0];
   }
 
@@ -165,18 +165,18 @@ describe('Model: new game', () => {
   });
 });
 
-interface Movement {
-  begin: Position;
-  end: Position;
-  cell: Cell;
+interface NewCellPosition {
+  position: Position;
+  newCell: NewCell;
 }
 
 interface ShiftTest {
   title: string;
   fnName: 'up' | 'right' | 'down' | 'left';
-  movements: Movement[];
-  newCells: NewCell[];
-  gameMap?: GameMap;
+  newCellsNewGame: NewCellPosition[];
+  newCellsAfterShift: NewCellPosition[];
+  gameMapPreload?: GameMap;
+  gameMapAfterShift: GameMap;
 }
 
 describe('Model: shift: to last line', () => {
@@ -186,484 +186,426 @@ describe('Model: shift: to last line', () => {
   let spyPosition: any;
   let spyCell: any;
   let spyViewSetCell: any;
-  const start1: Position = { row: 1, column: 1 };
-  const start2: Position = { row: 2, column: 2 };
-  const cell1: NewCell = 2;
-  const cell2: NewCell = 4;
 
   const tests: ShiftTest[] = [
     {
       title: 'shift up',
       fnName: 'up',
-      movements: [
-        { begin: start1, end: { row: 0, column: 1 }, cell: cell1 },
-        { begin: start2, end: { row: 0, column: 2 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 2 }, newCell: 2 },
+        { position: { row: 3, column: 3 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 2, 4, 0],
+        [0, 0, 0, 0],
+        [0, 0, 2, 0],
+        [0, 0, 0, 2],
+      ],
     },
     {
       title: 'shift up preloaded map',
       fnName: 'up',
-      movements: [
-        { begin: start1, end: { row: 0, column: 1 }, cell: cell1 },
-        { begin: start2, end: { row: 0, column: 2 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 4 },
+      ],
+      gameMapPreload: [
         [32, 0, 0, 2],
         [16, 0, 0, 8],
         [2, 0, 0, 4],
         [8, 0, 0, 8],
       ],
+      gameMapAfterShift: [
+        [32, 2, 4, 2],
+        [16, 0, 0, 8],
+        [2, 0, 0, 4],
+        [8, 2, 4, 8],
+      ],
+    },
+    {
+      title: 'shift up already on last line',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 0, column: 2 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 0 }, newCell: 2 },
+        { position: { row: 3, column: 3 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 2, 2, 0],
+        [0, 0, 0, 0],
+        [2, 0, 0, 0],
+        [0, 0, 0, 2],
+      ],
+    },
+    {
+      title: 'shift up multiple move',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 0 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [0, 0, 16, 0],
+        [32, 0, 0, 0],
+        [0, 4, 0, 512],
+        [16, 8, 0, 1024],
+      ],
+      gameMapAfterShift: [
+        [32, 2, 16, 512],
+        [16, 4, 4, 1024],
+        [2, 8, 0, 0],
+        [0, 0, 2, 0],
+      ],
+    },
+    {
+      title: 'shift up no move',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [],
+      gameMapPreload: [
+        [2, 32, 16, 8],
+        [32, 0, 8, 2],
+        [2, 4, 0, 512],
+        [16, 8, 16, 1024],
+      ],
+      gameMapAfterShift: [
+        [2, 32, 16, 8],
+        [32, 2, 8, 2],
+        [2, 4, 4, 512],
+        [16, 8, 16, 1024],
+      ],
     },
     {
       title: 'shift right',
       fnName: 'right',
-      movements: [
-        { begin: start1, end: { row: 1, column: 3 }, cell: cell1 },
-        { begin: start2, end: { row: 2, column: 3 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 0 }, newCell: 4 },
+        { position: { row: 1, column: 1 }, newCell: 4 },
+      ],
+      gameMapAfterShift: [
+        [4, 0, 0, 0],
+        [0, 4, 0, 2],
+        [0, 0, 0, 4],
+        [0, 0, 0, 0],
+      ],
     },
     {
       title: 'shift right preloaded map',
       fnName: 'right',
-      movements: [
-        { begin: start1, end: { row: 1, column: 3 }, cell: cell1 },
-        { begin: start2, end: { row: 2, column: 3 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
+      newCellsAfterShift: [
+        { position: { row: 1, column: 2 }, newCell: 4 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [32, 16, 8, 64],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [8, 64, 128, 8],
+      ],
+      gameMapAfterShift: [
+        [32, 16, 8, 64],
+        [0, 0, 4, 2],
+        [2, 0, 0, 4],
+        [8, 64, 128, 8],
+      ],
+    },
+    {
+      title: 'shift right already on last line',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 1, column: 3 }, newCell: 2 },
+        { position: { row: 2, column: 3 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 2 }, newCell: 4 },
+        { position: { row: 3, column: 3 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 0, 0, 0],
+        [0, 0, 4, 2],
+        [0, 0, 0, 4],
         [0, 0, 0, 2],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [8, 4096, 2, 8],
+      ],
+    },
+    {
+      title: 'shift right multiple move',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 0 }, newCell: 2 },
+        { position: { row: 1, column: 0 }, newCell: 4 },
+      ],
+      gameMapPreload: [
+        [0, 32, 0, 8],
+        [8, 0, 64, 0],
+        [128, 16, 0, 0],
+        [2, 0, 256, 128],
+      ],
+      gameMapAfterShift: [
+        [2, 0, 32, 8],
+        [4, 8, 2, 64],
+        [0, 128, 16, 4],
+        [0, 2, 256, 128],
+      ],
+    },
+    {
+      title: 'shift right no move',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [],
+      gameMapPreload: [
+        [4, 32, 2, 8],
+        [8, 0, 64, 2],
+        [128, 16, 0, 2],
+        [2, 4, 256, 128],
+      ],
+      gameMapAfterShift: [
+        [4, 32, 2, 8],
+        [8, 2, 64, 2],
+        [128, 16, 4, 2],
+        [2, 4, 256, 128],
       ],
     },
     {
       title: 'shift down',
       fnName: 'down',
-      movements: [
-        { begin: start1, end: { row: 3, column: 1 }, cell: cell1 },
-        { begin: start2, end: { row: 3, column: 2 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 3 }, newCell: 4 },
+        { position: { row: 1, column: 0 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 0, 0, 4],
+        [2, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 2, 4, 0],
+      ],
     },
     {
       title: 'shift down preloaded map',
       fnName: 'down',
-      movements: [
-        { begin: start1, end: { row: 3, column: 1 }, cell: cell1 },
-        { begin: start2, end: { row: 3, column: 2 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
+      newCellsAfterShift: [
+        { position: { row: 0, column: 1 }, newCell: 4 },
+        { position: { row: 1, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [32, 0, 0, 512],
+        [64, 0, 0, 128],
+        [16, 0, 0, 64],
+        [8, 0, 0, 16],
+      ],
+      gameMapAfterShift: [
+        [32, 4, 0, 512],
+        [64, 0, 2, 128],
+        [16, 0, 0, 64],
+        [8, 2, 4, 16],
+      ],
+    },
+    {
+      title: 'shift down already on last line',
+      fnName: 'down',
+      newCellsNewGame: [
+        { position: { row: 3, column: 1 }, newCell: 4 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 3 }, newCell: 2 },
+        { position: { row: 1, column: 2 }, newCell: 4 },
+      ],
+      gameMapAfterShift: [
+        [0, 0, 0, 2],
+        [0, 0, 4, 0],
         [0, 0, 0, 0],
-        [16, 0, 0, 4],
-        [32, 0, 0, 8],
-        [8, 0, 0, 8],
+        [0, 4, 2, 0],
+      ],
+    },
+    {
+      title: 'shift down multiple move',
+      fnName: 'down',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 3 }, newCell: 4 },
+        { position: { row: 0, column: 1 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [8, 128, 0, 256],
+        [0, 0, 0, 0],
+        [2, 64, 0, 0],
+        [8, 0, 16, 32],
+      ],
+      gameMapAfterShift: [
+        [0, 2, 0, 0],
+        [8, 128, 0, 4],
+        [2, 2, 4, 256],
+        [8, 64, 16, 32],
+      ],
+    },
+    {
+      title: 'shift down no move',
+      fnName: 'down',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [],
+      gameMapPreload: [
+        [8, 128, 2, 256],
+        [4, 0, 32, 4],
+        [2, 64, 0, 16],
+        [8, 2, 16, 32],
+      ],
+      gameMapAfterShift: [
+        [8, 128, 2, 256],
+        [4, 2, 32, 4],
+        [2, 64, 4, 16],
+        [8, 2, 16, 32],
       ],
     },
     {
       title: 'shift left',
       fnName: 'left',
-      movements: [
-        { begin: start1, end: { row: 1, column: 0 }, cell: cell1 },
-        { begin: start2, end: { row: 2, column: 0 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 2 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 0, 0, 0],
+        [2, 0, 4, 0],
+        [4, 0, 2, 0],
+        [0, 0, 0, 0],
+      ],
     },
     {
       title: 'shift left preloaded map',
       fnName: 'left',
-      movements: [
-        { begin: start1, end: { row: 1, column: 0 }, cell: cell1 },
-        { begin: start2, end: { row: 2, column: 0 }, cell: cell2 },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [8, 2, 0, 0],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 3 }, newCell: 4 },
+        { position: { row: 2, column: 1 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [32, 16, 8, 64],
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [8, 2, 16, 0],
+        [8, 128, 32, 16],
+      ],
+      gameMapAfterShift: [
+        [32, 16, 8, 64],
+        [2, 0, 0, 4],
+        [4, 2, 0, 0],
+        [8, 128, 32, 16],
       ],
     },
-  ];
-
-  beforeEach(() => {
-    view = new TestView();
-    spyViewSetCell = spyOn(view, 'setCell');
-    randomizer = new TestRandom();
-    model = new Model(view, randomizer);
-  });
-
-  afterEach(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  afterAll(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  tests.forEach((test) => {
-    it(test.title, () => {
-      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-        start1,
-        start2
-      );
-      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
-        cell1,
-        cell2
-      );
-      model.newGame(test.gameMap);
-      spyViewSetCell.calls.reset();
-      spyPosition.calls.reset();
-      spyCell.calls.reset();
-
-      const endPositions = test.movements.map((movement) => movement.end);
-      randomizer.randomPosition = jasmine
-        .createSpy()
-        .and.returnValues(...endPositions);
-      randomizer.randomNewCell = jasmine
-        .createSpy()
-        .and.returnValues(...test.newCells);
-
-      switch (test.fnName) {
-        case 'up':
-          model.shiftUp();
-          break;
-        case 'right':
-          model.shiftRight();
-          break;
-        case 'down':
-          model.shiftDown();
-          break;
-        case 'left':
-          model.shiftLeft();
-          break;
-      }
-
-      for (const movement of test.movements) {
-        expect(view.setCell).toHaveBeenCalledWith(
-          movement.end.row,
-          movement.end.column,
-          movement.cell
-        );
-        expect(view.setCell).toHaveBeenCalledWith(
-          movement.begin.row,
-          movement.begin.column,
-          0
-        );
-      }
-    });
-  });
-});
-
-describe('Model: shift: already on last line', () => {
-  let view: Viewable;
-  let model: Model;
-  let randomizer: TestRandom;
-  let spyViewSetCell: any;
-  let cell1: NewCell;
-  let cell2: NewCell;
-  cell1 = 2;
-  cell2 = 4;
-
-  const tests: ShiftTest[] = [
     {
-      title: 'shift up',
-      fnName: 'up',
-      movements: [
-        {
-          begin: { row: 0, column: 1 },
-          end: { row: 0, column: 1 },
-          cell: cell1,
-        },
-        {
-          begin: { row: 0, column: 2 },
-          end: { row: 0, column: 2 },
-          cell: cell2,
-        },
-      ],
-      newCells: [cell1, cell2],
-    },
-    {
-      title: 'shift right',
-      fnName: 'right',
-      movements: [
-        {
-          begin: { row: 1, column: 3 },
-          end: { row: 1, column: 3 },
-          cell: cell1,
-        },
-        {
-          begin: { row: 2, column: 3 },
-          end: { row: 2, column: 3 },
-          cell: cell2,
-        },
-      ],
-      newCells: [cell1, cell2],
-    },
-    {
-      title: 'shift down',
-      fnName: 'down',
-      movements: [
-        {
-          begin: { row: 3, column: 3 },
-          end: { row: 3, column: 3 },
-          cell: cell1,
-        },
-        {
-          begin: { row: 3, column: 2 },
-          end: { row: 3, column: 2 },
-          cell: cell2,
-        },
-      ],
-      newCells: [cell1, cell2],
-    },
-    {
-      title: 'shift left',
+      title: 'shift left already on last line',
       fnName: 'left',
-      movements: [
-        {
-          begin: { row: 1, column: 0 },
-          end: { row: 1, column: 0 },
-          cell: cell1,
-        },
-        {
-          begin: { row: 3, column: 0 },
-          end: { row: 3, column: 0 },
-          cell: cell2,
-        },
+      newCellsNewGame: [
+        { position: { row: 1, column: 0 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-    },
-  ];
-
-  beforeEach(() => {
-    view = new TestView();
-    spyViewSetCell = spyOn(view, 'setCell');
-    randomizer = new TestRandom();
-    model = new Model(view, randomizer);
-  });
-
-  tests.forEach((test) => {
-    it(test.title, () => {
-      const endPositions = test.movements.map((movement) => movement.end);
-      spyOn(randomizer, 'randomPosition').and.returnValues(...endPositions);
-      spyOn(randomizer, 'randomNewCell').and.returnValues(...test.newCells);
-      model.newGame();
-      spyViewSetCell.calls.reset();
-      switch (test.fnName) {
-        case 'up':
-          model.shiftUp();
-          break;
-        case 'right':
-          model.shiftRight();
-          break;
-        case 'down':
-          model.shiftDown();
-          break;
-        case 'left':
-          model.shiftLeft();
-          break;
-      }
-
-      expect(view.setCell).not.toHaveBeenCalled();
-    });
-  });
-});
-
-describe('Model: shift: multiple move', () => {
-  let view: Viewable;
-  let model: Model;
-  let randomizer: TestRandom;
-  let spyPosition: any;
-  let spyCell: any;
-  let spyViewSetCell: any;
-  const start1: Position = { row: 1, column: 0 };
-  const start2: Position = { row: 3, column: 2 };
-  const cell1: NewCell = 2;
-  const cell2: NewCell = 4;
-
-  const tests: ShiftTest[] = [
-    {
-      title: 'shift up',
-      fnName: 'up',
-      movements: [
-        { begin: { row: 3, column: 0 }, end: { row: 2, column: 0 }, cell: 128 },
-        { begin: { row: 2, column: 1 }, end: { row: 0, column: 1 }, cell: 256 },
-        {
-          begin: { row: 3, column: 1 },
-          end: { row: 1, column: 1 },
-          cell: 1024,
-        },
-        {
-          begin: { row: 1, column: 2 },
-          end: { row: 0, column: 2 },
-          cell: 16,
-        },
-        {
-          begin: { row: 3, column: 2 },
-          end: { row: 1, column: 2 },
-          cell: cell2,
-        },
-        {
-          begin: { row: 1, column: 3 },
-          end: { row: 0, column: 3 },
-          cell: 64,
-        },
-        {
-          begin: { row: 2, column: 3 },
-          end: { row: 1, column: 3 },
-          cell: 512,
-        },
-        {
-          begin: { row: 3, column: 3 },
-          end: { row: 2, column: 3 },
-          cell: 2048,
-        },
+      newCellsAfterShift: [
+        { position: { row: 0, column: 0 }, newCell: 4 },
+        { position: { row: 3, column: 3 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 0, 0, 0],
-        [0, 0, 16, 64],
-        [0, 256, 0, 512],
-        [128, 1024, 0, 2048],
+      gameMapAfterShift: [
+        [4, 0, 0, 0],
+        [2, 0, 0, 0],
+        [4, 0, 0, 0],
+        [0, 0, 0, 4],
       ],
     },
     {
-      title: 'shift right',
-      fnName: 'right',
-      movements: [
-        { begin: { row: 0, column: 2 }, end: { row: 0, column: 3 }, cell: 8 },
-        { begin: { row: 0, column: 0 }, end: { row: 0, column: 2 }, cell: 32 },
-        {
-          begin: { row: 1, column: 1 },
-          end: { row: 1, column: 2 },
-          cell: 16,
-        },
-        {
-          begin: start1,
-          end: { row: 1, column: 1 },
-          cell: cell1,
-        },
-        {
-          begin: { row: 2, column: 1 },
-          end: { row: 2, column: 3 },
-          cell: 1024,
-        },
-        {
-          begin: { row: 2, column: 0 },
-          end: { row: 2, column: 2 },
-          cell: 256,
-        },
-        {
-          begin: start2,
-          end: { row: 3, column: 3 },
-          cell: cell2,
-        },
-        {
-          begin: { row: 3, column: 0 },
-          end: { row: 3, column: 2 },
-          cell: 128,
-        },
+      title: 'shift left multiple move',
+      fnName: 'left',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 0, 8, 0],
-        [0, 16, 0, 64],
-        [256, 1024, 0, 0],
-        [128, 0, 0, 0],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 3 }, newCell: 2 },
+        { position: { row: 3, column: 3 }, newCell: 4 },
       ],
-    },
-    {
-      title: 'shift down',
-      fnName: 'down',
-      movements: [
-        { begin: start1, end: { row: 2, column: 0 }, cell: cell1 },
-        { begin: { row: 0, column: 0 }, end: { row: 1, column: 0 }, cell: 32 },
-        {
-          begin: { row: 2, column: 1 },
-          end: { row: 3, column: 1 },
-          cell: 1024,
-        },
-        {
-          begin: { row: 0, column: 1 },
-          end: { row: 2, column: 1 },
-          cell: 256,
-        },
-        {
-          begin: { row: 1, column: 2 },
-          end: { row: 2, column: 2 },
-          cell: 16,
-        },
-        {
-          begin: { row: 1, column: 3 },
-          end: { row: 2, column: 3 },
-          cell: 512,
-        },
-        {
-          begin: { row: 0, column: 3 },
-          end: { row: 1, column: 3 },
-          cell: 64,
-        },
-      ],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 256, 0, 64],
-        [0, 0, 16, 512],
+      gameMapPreload: [
+        [0, 0, 2, 4],
+        [0, 0, 16, 0],
+        [64, 0, 0, 32],
         [0, 1024, 0, 0],
-        [128, 0, 0, 2048],
+      ],
+      gameMapAfterShift: [
+        [2, 4, 0, 0],
+        [2, 16, 0, 0],
+        [64, 4, 32, 2],
+        [1024, 0, 0, 4],
       ],
     },
     {
-      title: 'shift left',
+      title: 'shift left no move',
       fnName: 'left',
-      movements: [
-        { begin: { row: 0, column: 3 }, end: { row: 0, column: 1 }, cell: 8 },
-        { begin: { row: 1, column: 3 }, end: { row: 1, column: 2 }, cell: 64 },
-        {
-          begin: { row: 2, column: 1 },
-          end: { row: 2, column: 0 },
-          cell: 1024,
-        },
-        {
-          begin: { row: 2, column: 2 },
-          end: { row: 2, column: 1 },
-          cell: 2048,
-        },
-        {
-          begin: { row: 2, column: 3 },
-          end: { row: 2, column: 2 },
-          cell: 256,
-        },
-        {
-          begin: { row: 3, column: 1 },
-          end: { row: 3, column: 0 },
-          cell: 128,
-        },
-        {
-          begin: start2,
-          end: { row: 3, column: 1 },
-          cell: cell2,
-        },
-        {
-          begin: { row: 3, column: 3 },
-          end: { row: 3, column: 2 },
-          cell: 512,
-        },
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 0, 0, 8],
-        [0, 16, 0, 64],
-        [0, 1024, 2048, 256],
-        [0, 128, 0, 512],
+      newCellsAfterShift: [],
+      gameMapPreload: [
+        [2, 4, 8, 4],
+        [32, 0, 16, 2],
+        [64, 128, 0, 32],
+        [2, 1024, 4, 8],
+      ],
+      gameMapAfterShift: [
+        [2, 4, 8, 4],
+        [32, 2, 16, 2],
+        [64, 128, 4, 32],
+        [2, 1024, 4, 8],
       ],
     },
   ];
@@ -690,25 +632,30 @@ describe('Model: shift: multiple move', () => {
   tests.forEach((test) => {
     it(test.title, () => {
       spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-        start1,
-        start2
+        test.newCellsNewGame[0]?.position,
+        test.newCellsNewGame[1]?.position
       );
       spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
-        cell1,
-        cell2
+        test.newCellsNewGame[0]?.newCell,
+        test.newCellsNewGame[1]?.newCell
       );
-      model.newGame(test.gameMap);
+      model.newGame(test.gameMapPreload);
       spyViewSetCell.calls.reset();
       spyPosition.calls.reset();
       spyCell.calls.reset();
 
-      const endPositions = test.movements.map((movement) => movement.end);
       randomizer.randomPosition = jasmine
         .createSpy()
-        .and.returnValues(...endPositions);
+        .and.returnValues(
+          test.newCellsAfterShift[0]?.position,
+          test.newCellsAfterShift[1]?.position
+        );
       randomizer.randomNewCell = jasmine
         .createSpy()
-        .and.returnValues(...test.newCells);
+        .and.returnValues(
+          test.newCellsAfterShift[0]?.newCell,
+          test.newCellsAfterShift[1]?.newCell
+        );
 
       switch (test.fnName) {
         case 'up':
@@ -725,143 +672,15 @@ describe('Model: shift: multiple move', () => {
           break;
       }
 
-      for (const movement of test.movements) {
-        expect(view.setCell).toHaveBeenCalledWith(
-          movement.end.row,
-          movement.end.column,
-          movement.cell
-        );
-        expect(view.setCell).toHaveBeenCalledWith(
-          movement.begin.row,
-          movement.begin.column,
-          0
-        );
+      for (const row of RowValues) {
+        for (const column of ColumnValues) {
+          expect(view.setCell).toHaveBeenCalledWith(
+            row,
+            column,
+            test.gameMapAfterShift[row][column]
+          );
+        }
       }
-    });
-  });
-});
-
-describe('Model: shift: no move', () => {
-  let view: Viewable;
-  let model: Model;
-  let randomizer: TestRandom;
-  let spyPosition: any;
-  let spyCell: any;
-  let spyViewSetCell: any;
-  const start1: Position = { row: 1, column: 0 };
-  const start2: Position = { row: 3, column: 2 };
-  const cell1: NewCell = 2;
-  const cell2: NewCell = 4;
-
-  const tests: ShiftTest[] = [
-    {
-      title: 'shift up',
-      fnName: 'up',
-      movements: [],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 4096, 8192, 65536],
-        [0, 32, 16, 64],
-        [64, 256, 8, 512],
-        [128, 1024, 0, 2048],
-      ],
-    },
-    {
-      title: 'shift right',
-      fnName: 'right',
-      movements: [],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 4096, 8192, 65536],
-        [0, 32, 16, 64],
-        [64, 256, 8, 512],
-        [128, 1024, 0, 2048],
-      ],
-    },
-    {
-      title: 'shift down',
-      fnName: 'down',
-      movements: [],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 4096, 8192, 65536],
-        [0, 32, 16, 64],
-        [64, 256, 8, 512],
-        [128, 1024, 0, 2048],
-      ],
-    },
-    {
-      title: 'shift left',
-      fnName: 'left',
-      movements: [],
-      newCells: [cell1, cell2],
-      gameMap: [
-        [32, 4096, 8192, 65536],
-        [0, 32, 16, 64],
-        [64, 256, 8, 512],
-        [128, 1024, 0, 2048],
-      ],
-    },
-  ];
-
-  beforeEach(() => {
-    view = new TestView();
-    spyViewSetCell = spyOn(view, 'setCell');
-    randomizer = new TestRandom();
-    model = new Model(view, randomizer);
-  });
-
-  afterEach(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  afterAll(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  tests.forEach((test) => {
-    it(test.title, () => {
-      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-        start1,
-        start2
-      );
-      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
-        cell1,
-        cell2
-      );
-      model.newGame(test.gameMap);
-      spyViewSetCell.calls.reset();
-      spyPosition.calls.reset();
-      spyCell.calls.reset();
-
-      const endPositions = test.movements.map((movement) => movement.end);
-      randomizer.randomPosition = jasmine
-        .createSpy()
-        .and.returnValues(...endPositions);
-      randomizer.randomNewCell = jasmine
-        .createSpy()
-        .and.returnValues(...test.newCells);
-
-      switch (test.fnName) {
-        case 'up':
-          model.shiftUp();
-          break;
-        case 'right':
-          model.shiftRight();
-          break;
-        case 'down':
-          model.shiftDown();
-          break;
-        case 'left':
-          model.shiftLeft();
-          break;
-      }
-
-      expect(view.setCell).not.toHaveBeenCalled();
     });
   });
 });

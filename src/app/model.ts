@@ -45,20 +45,44 @@ export class Model {
         this.emptyPositions.push({ row, column });
       }
     }
-    const pos1 = this.randomizer.randomPosition(this.emptyPositions);
-    const delIndex1 = this.emptyPositions.findIndex(
-      (x) => x.row === pos1.row && x.column === pos1.column
+    this.addNewCellOnMap();
+    this.addNewCellOnMap();
+    this.showGameMap();
+  }
+
+  private addNewCellOnMap(): void {
+    const position = this.randomizer.randomPosition(this.emptyPositions);
+    if (position === null || position === undefined) {
+      return;
+    }
+    if (!this.removeFromEmptyPositions(position)) {
+      return;
+    }
+    const newCell = this.randomizer.randomNewCell();
+    this.cellMap[position.row][position.column] = newCell;
+  }
+
+  private addToEmptyPositions(position: Position): void {
+    const found = this.emptyPositions.find(
+      (x) => x.row === position.row && x.column === position.column
     );
-    this.emptyPositions.splice(delIndex1, 1);
-    const pos2 = this.randomizer.randomPosition(this.emptyPositions);
-    const delIndex2 = this.emptyPositions.findIndex(
-      (x) => x.row === pos2.row && x.column === pos2.column
+    if (found === undefined) {
+      this.emptyPositions.push({ ...position });
+    }
+  }
+
+  private removeFromEmptyPositions(position: Position): boolean {
+    const index = this.emptyPositions.findIndex(
+      (x) => x.row === position.row && x.column === position.column
     );
-    this.emptyPositions.splice(delIndex2, 1);
-    const cell1 = this.randomizer.randomNewCell();
-    const cell2 = this.randomizer.randomNewCell();
-    this.cellMap[pos1.row][pos1.column] = cell1;
-    this.cellMap[pos2.row][pos2.column] = cell2;
+    if (index < 0) {
+      return false;
+    }
+    this.emptyPositions.splice(index, 1);
+    return true;
+  }
+
+  private showGameMap(): void {
     for (const row of RowValues) {
       for (const column of ColumnValues) {
         this.view.setCell(row, column, this.cellMap[row][column]);
@@ -75,14 +99,17 @@ export class Model {
         for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
           if (this.cellMap[row2][column] !== 0) {
             this.cellMap[row1][column] = this.cellMap[row2][column];
+            this.removeFromEmptyPositions({ row: row1, column: column });
             this.cellMap[row2][column] = 0;
-            this.view.setCell(row1, column, this.cellMap[row1][column]);
-            this.view.setCell(row2 as Row, column, this.cellMap[row2][column]);
+            this.addToEmptyPositions({ row: row2 as Row, column: column });
             break;
           }
         }
       }
     }
+    this.addNewCellOnMap();
+    this.addNewCellOnMap();
+    this.showGameMap();
   }
 
   shiftRight() {
@@ -94,14 +121,17 @@ export class Model {
         for (let col2 = col1 - 1; col2 >= 0; col2--) {
           if (this.cellMap[row][col2] !== 0) {
             this.cellMap[row][col1] = this.cellMap[row][col2];
+            this.removeFromEmptyPositions({ row: row, column: col1 as Column });
             this.cellMap[row][col2] = 0;
-            this.view.setCell(row, col1 as Column, this.cellMap[row][col1]);
-            this.view.setCell(row, col2 as Column, this.cellMap[row][col2]);
+            this.addToEmptyPositions({ row: row, column: col2 as Column });
             break;
           }
         }
       }
     }
+    this.addNewCellOnMap();
+    this.addNewCellOnMap();
+    this.showGameMap();
   }
 
   shiftDown() {
@@ -113,14 +143,17 @@ export class Model {
         for (let row2 = row1 - 1; row2 >= 0; row2--) {
           if (this.cellMap[row2][column] !== 0) {
             this.cellMap[row1][column] = this.cellMap[row2][column];
+            this.removeFromEmptyPositions({ row: row1 as Row, column: column });
             this.cellMap[row2][column] = 0;
-            this.view.setCell(row1 as Row, column, this.cellMap[row1][column]);
-            this.view.setCell(row2 as Row, column, this.cellMap[row2][column]);
+            this.addToEmptyPositions({ row: row2 as Row, column: column });
             break;
           }
         }
       }
     }
+    this.addNewCellOnMap();
+    this.addNewCellOnMap();
+    this.showGameMap();
   }
 
   shiftLeft() {
@@ -132,13 +165,16 @@ export class Model {
         for (let col2 = col1 + 1; col2 < COLUMN_COUNT; col2++) {
           if (this.cellMap[row][col2] !== 0) {
             this.cellMap[row][col1] = this.cellMap[row][col2];
+            this.removeFromEmptyPositions({ row: row, column: col1 as Column });
             this.cellMap[row][col2] = 0;
-            this.view.setCell(row, col1 as Column, this.cellMap[row][col1]);
-            this.view.setCell(row, col2 as Column, this.cellMap[row][col2]);
+            this.addToEmptyPositions({ row: row, column: col2 as Column });
             break;
           }
         }
       }
     }
+    this.addNewCellOnMap();
+    this.addNewCellOnMap();
+    this.showGameMap();
   }
 }

@@ -2,8 +2,13 @@ import { NewCell, Position } from './cell';
 import { Randomable } from './randomable';
 
 export class Randomizer implements Randomable {
-  randomPosition(emptyPositions: Position[]): Position {
-    return emptyPositions[this.randomInteger(0, emptyPositions.length - 1)];
+  randomPosition(emptyPositions: Position[]): Position | null {
+    if (emptyPositions.length === 0) {
+      return null;
+    }
+    const index = this.randomInteger(0, emptyPositions.length - 1);
+    const position = emptyPositions[index];
+    return position;
   }
 
   randomNewCell(): NewCell {
