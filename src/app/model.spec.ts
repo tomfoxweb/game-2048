@@ -621,6 +621,51 @@ describe('Model: shift: multiple move', () => {
         [128, 0, 0, 2048],
       ],
     },
+    {
+      title: 'shift left',
+      fnName: 'left',
+      movements: [
+        { begin: { row: 0, column: 3 }, end: { row: 0, column: 1 }, cell: 8 },
+        { begin: { row: 1, column: 3 }, end: { row: 1, column: 2 }, cell: 64 },
+        {
+          begin: { row: 2, column: 1 },
+          end: { row: 2, column: 0 },
+          cell: 1024,
+        },
+        {
+          begin: { row: 2, column: 2 },
+          end: { row: 2, column: 1 },
+          cell: 2048,
+        },
+        {
+          begin: { row: 2, column: 3 },
+          end: { row: 2, column: 2 },
+          cell: 256,
+        },
+        {
+          begin: { row: 3, column: 1 },
+          end: { row: 3, column: 0 },
+          cell: 128,
+        },
+        {
+          begin: start2,
+          end: { row: 3, column: 1 },
+          cell: cell2,
+        },
+        {
+          begin: { row: 3, column: 3 },
+          end: { row: 3, column: 2 },
+          cell: 512,
+        },
+      ],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 0, 0, 8],
+        [0, 16, 0, 64],
+        [0, 1024, 2048, 256],
+        [0, 128, 0, 512],
+      ],
+    },
   ];
 
   beforeEach(() => {
