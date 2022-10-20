@@ -219,6 +219,20 @@ describe('Model: shift', () => {
       cell2: 4,
     },
     {
+      title: 'shift right preloaded map',
+      fnName: 'right',
+      endPosition1: { row: 1, column: 3 },
+      endPosition2: { row: 2, column: 3 },
+      cell1: 2,
+      cell2: 4,
+      gameMap: [
+        [0, 0, 0, 2],
+        [16, 0, 0, 0],
+        [0, 2, 0, 0],
+        [8, 4096, 0, 8],
+      ],
+    },
+    {
       title: 'shift down',
       fnName: 'down',
       endPosition1: { row: 3, column: 1 },
