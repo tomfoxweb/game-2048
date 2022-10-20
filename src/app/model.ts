@@ -92,6 +92,12 @@ export class Model {
     }
   }
 
+  private checkForGameOver(): void {
+    if (this.emptyPositions.length === 0) {
+      this.view.showGameOver();
+    }
+  }
+
   shiftUp(): void {
     let hasMoved = false;
     for (const column of ColumnValues) {
@@ -116,6 +122,7 @@ export class Model {
       this.addNewCellOnMap();
     }
     this.showGameMap();
+    this.checkForGameOver();
   }
 
   shiftRight() {
@@ -142,6 +149,7 @@ export class Model {
       this.addNewCellOnMap();
     }
     this.showGameMap();
+    this.checkForGameOver();
   }
 
   shiftDown() {
@@ -168,6 +176,7 @@ export class Model {
       this.addNewCellOnMap();
     }
     this.showGameMap();
+    this.checkForGameOver();
   }
 
   shiftLeft() {
@@ -194,5 +203,6 @@ export class Model {
       this.addNewCellOnMap();
     }
     this.showGameMap();
+    this.checkForGameOver();
   }
 }

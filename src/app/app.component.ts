@@ -52,4 +52,10 @@ export class AppComponent implements OnInit, Viewable {
   newGame(): void {
     this.controller.newGame();
   }
+
+  showGameOver(): void {
+    window.setTimeout(() => {
+      alert('Game Over!');
+    }, 100);
+  }
 }

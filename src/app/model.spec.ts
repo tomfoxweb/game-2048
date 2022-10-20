@@ -14,6 +14,8 @@ import { Viewable } from './viewable';
 
 class TestView implements Viewable {
   setCell(row: Row, column: Column, cell: Cell): void {}
+
+  showGameOver(): void {}
 }
 
 class TestRandom implements Randomable {
