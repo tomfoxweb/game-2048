@@ -172,6 +172,7 @@ interface ShiftTest {
   endPosition2: Position;
   cell1: NewCell;
   cell2: NewCell;
+  gameMap?: GameMap;
 }
 
 describe('Model: shift', () => {
@@ -194,6 +195,20 @@ describe('Model: shift', () => {
       endPosition2: { row: 0, column: 2 },
       cell1: 2,
       cell2: 4,
+    },
+    {
+      title: 'shift up preloaded map',
+      fnName: 'up',
+      endPosition1: { row: 0, column: 1 },
+      endPosition2: { row: 0, column: 2 },
+      cell1: 2,
+      cell2: 4,
+      gameMap: [
+        [0, 0, 0, 2],
+        [16, 0, 0, 0],
+        [0, 2, 0, 4],
+        [8, 4096, 0, 8],
+      ],
     },
     {
       title: 'shift right',
