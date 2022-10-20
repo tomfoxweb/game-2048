@@ -403,6 +403,16 @@ describe('Model: shift: already on last line', () => {
       cell1: cell1,
       cell2: cell2,
     },
+    {
+      title: 'shift down',
+      fnName: 'down',
+      startPosition1: { row: 3, column: 2 },
+      startPosition2: { row: 3, column: 3 },
+      endPosition1: { row: 3, column: 2 },
+      endPosition2: { row: 3, column: 3 },
+      cell1: cell1,
+      cell2: cell2,
+    },
   ];
 
   beforeEach(() => {

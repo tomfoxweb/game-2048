@@ -105,10 +105,22 @@ export class Model {
   }
 
   shiftDown() {
-    this.view.setCell(3, 1, 2);
-    this.view.setCell(1, 1, 0);
-    this.view.setCell(3, 2, 4);
-    this.view.setCell(2, 2, 0);
+    for (const column of ColumnValues) {
+      for (let row1 = ROW_COUNT - 1; row1 > 0; row1--) {
+        if (this.cellMap[row1][column] !== 0) {
+          continue;
+        }
+        for (let row2 = row1 - 1; row2 >= 0; row2--) {
+          if (this.cellMap[row2][column] !== 0) {
+            this.cellMap[row1][column] = this.cellMap[row2][column];
+            this.cellMap[row2][column] = 0;
+            this.view.setCell(row1 as Row, column, this.cellMap[row1][column]);
+            this.view.setCell(row2 as Row, column, this.cellMap[row2][column]);
+            break;
+          }
+        }
+      }
+    }
   }
 
   shiftLeft() {
