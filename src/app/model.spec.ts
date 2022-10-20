@@ -300,16 +300,7 @@ describe('Model: shift: to last line', () => {
     view = new TestView();
     spyViewSetCell = spyOn(view, 'setCell');
     randomizer = new TestRandom();
-    spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-      startPosition1,
-      startPosition2
-    );
-    spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
     model = new Model(view, randomizer);
-    model.newGame();
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
   });
 
   afterEach(() => {
@@ -326,6 +317,19 @@ describe('Model: shift: to last line', () => {
 
   tests.forEach((test) => {
     it(test.title, () => {
+      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+        startPosition1,
+        startPosition2
+      );
+      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
+        cell1,
+        cell2
+      );
+      model.newGame(test.gameMap);
+      spyViewSetCell.calls.reset();
+      spyPosition.calls.reset();
+      spyCell.calls.reset();
+
       randomizer.randomPosition = jasmine
         .createSpy()
         .and.returnValues(test.endPosition1, test.endPosition2);
