@@ -119,6 +119,7 @@ export class Model {
   }
 
   shiftRight() {
+    let hasMoved = false;
     for (const row of RowValues) {
       for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
         if (this.cellMap[row][col1] !== 0) {
@@ -126,6 +127,7 @@ export class Model {
         }
         for (let col2 = col1 - 1; col2 >= 0; col2--) {
           if (this.cellMap[row][col2] !== 0) {
+            hasMoved = true;
             this.cellMap[row][col1] = this.cellMap[row][col2];
             this.removeFromEmptyPositions({ row: row, column: col1 as Column });
             this.cellMap[row][col2] = 0;
@@ -135,12 +137,15 @@ export class Model {
         }
       }
     }
-    this.addNewCellOnMap();
-    this.addNewCellOnMap();
+    if (hasMoved) {
+      this.addNewCellOnMap();
+      this.addNewCellOnMap();
+    }
     this.showGameMap();
   }
 
   shiftDown() {
+    let hasMoved = false;
     for (const column of ColumnValues) {
       for (let row1 = ROW_COUNT - 1; row1 > 0; row1--) {
         if (this.cellMap[row1][column] !== 0) {
@@ -148,6 +153,7 @@ export class Model {
         }
         for (let row2 = row1 - 1; row2 >= 0; row2--) {
           if (this.cellMap[row2][column] !== 0) {
+            hasMoved = true;
             this.cellMap[row1][column] = this.cellMap[row2][column];
             this.removeFromEmptyPositions({ row: row1 as Row, column: column });
             this.cellMap[row2][column] = 0;
@@ -157,12 +163,15 @@ export class Model {
         }
       }
     }
-    this.addNewCellOnMap();
-    this.addNewCellOnMap();
+    if (hasMoved) {
+      this.addNewCellOnMap();
+      this.addNewCellOnMap();
+    }
     this.showGameMap();
   }
 
   shiftLeft() {
+    let hasMoved = false;
     for (const row of RowValues) {
       for (let col1 = 0; col1 < COLUMN_COUNT - 1; col1++) {
         if (this.cellMap[row][col1] !== 0) {
@@ -170,6 +179,7 @@ export class Model {
         }
         for (let col2 = col1 + 1; col2 < COLUMN_COUNT; col2++) {
           if (this.cellMap[row][col2] !== 0) {
+            hasMoved = true;
             this.cellMap[row][col1] = this.cellMap[row][col2];
             this.removeFromEmptyPositions({ row: row, column: col1 as Column });
             this.cellMap[row][col2] = 0;
@@ -179,8 +189,10 @@ export class Model {
         }
       }
     }
-    this.addNewCellOnMap();
-    this.addNewCellOnMap();
+    if (hasMoved) {
+      this.addNewCellOnMap();
+      this.addNewCellOnMap();
+    }
     this.showGameMap();
   }
 }
