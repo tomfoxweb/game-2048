@@ -2,6 +2,7 @@ import {
   Cell,
   Column,
   ColumnValues,
+  GameMap,
   NewCell,
   Position,
   Row,
@@ -31,6 +32,7 @@ interface NewGameTest {
   position2: Position;
   cell1: NewCell;
   cell2: NewCell;
+  gameMap?: GameMap;
 }
 
 describe('Model: new game', () => {
@@ -62,6 +64,58 @@ describe('Model: new game', () => {
       position2: { row: 2, column: 3 },
       cell1: 4,
       cell2: 2,
+    },
+    {
+      title: 'add 2 and 2 cells on preload map',
+      position1: { row: 0, column: 0 },
+      position2: { row: 3, column: 3 },
+      cell1: 2,
+      cell2: 2,
+      gameMap: [
+        [0, 8, 2, 4],
+        [16, 0, 32, 64],
+        [0, 128, 0, 4],
+        [512, 256, 1024, 0],
+      ],
+    },
+    {
+      title: 'add 4 and 4 cells on preload map',
+      position1: { row: 1, column: 1 },
+      position2: { row: 2, column: 2 },
+      cell1: 4,
+      cell2: 4,
+      gameMap: [
+        [2048, 16, 2, 4],
+        [16, 0, 64, 64],
+        [0, 128, 0, 4],
+        [512, 4096, 256, 0],
+      ],
+    },
+    {
+      title: 'add 2 and 4 cells on preload map',
+      position1: { row: 2, column: 0 },
+      position2: { row: 1, column: 3 },
+      cell1: 2,
+      cell2: 4,
+      gameMap: [
+        [0, 0, 0, 2],
+        [16, 0, 32, 0],
+        [0, 2, 0, 4],
+        [8, 4096, 256, 0],
+      ],
+    },
+    {
+      title: 'add 4 and 2 cells on preload map',
+      position1: { row: 3, column: 2 },
+      position2: { row: 0, column: 2 },
+      cell1: 4,
+      cell2: 2,
+      gameMap: [
+        [0, 0, 0, 2],
+        [16, 0, 32, 0],
+        [0, 2, 0, 4],
+        [8, 4096, 0, 8],
+      ],
     },
   ];
   let view: Viewable;
