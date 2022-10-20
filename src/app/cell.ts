@@ -5,6 +5,8 @@ export const CellValues = [
   65536,
 ] as const;
 
+export const ROW_COUNT = RowValues.length;
+
 export type Row = typeof RowValues[number];
 export type Column = typeof ColumnValues[number];
 export type Position = { row: Row; column: Column };

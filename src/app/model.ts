@@ -1,4 +1,12 @@
-import { ColumnValues, GameMap, Position, RowValues } from './cell';
+import {
+  Cell,
+  ColumnValues,
+  GameMap,
+  Position,
+  Row,
+  RowValues,
+  ROW_COUNT,
+} from './cell';
 import { Randomable } from './randomable';
 import { Viewable } from './viewable';
 
@@ -57,10 +65,22 @@ export class Model {
   }
 
   shiftUp(): void {
-    this.view.setCell(0, 1, 2);
-    this.view.setCell(1, 1, 0);
-    this.view.setCell(0, 2, 4);
-    this.view.setCell(2, 2, 0);
+    for (const column of ColumnValues) {
+      for (const row1 of RowValues) {
+        if (this.cellMap[row1][column] !== 0) {
+          continue;
+        }
+        for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
+          if (this.cellMap[row2][column] !== 0) {
+            this.cellMap[row1][column] = this.cellMap[row2][column];
+            this.cellMap[row2][column] = 0;
+            this.view.setCell(row1, column, this.cellMap[row1][column]);
+            this.view.setCell(row2 as Row, column, this.cellMap[row2][column]);
+            break;
+          }
+        }
+      }
+    }
   }
 
   shiftRight() {
