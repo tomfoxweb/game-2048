@@ -1,31 +1,37 @@
-import { Cell, ColumnValues, Position, RowValues } from './cell';
+import { ColumnValues, GameMap, Position, RowValues } from './cell';
 import { Randomable } from './randomable';
 import { Viewable } from './viewable';
 
 export class Model {
   private view: Viewable;
   private randomizer: Randomable;
-  private cellMap: Cell[][];
+  private cellMap: GameMap;
   private emptyPositions: Position[];
 
   constructor(view: Viewable, randomizer: Randomable) {
     this.view = view;
     this.randomizer = randomizer;
-    this.cellMap = [];
-    for (const row of RowValues) {
-      this.cellMap.push([]);
-      for (const column of ColumnValues) {
-        this.cellMap[row].push(0);
-      }
-    }
+    this.cellMap = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
     this.emptyPositions = [];
   }
 
-  newGame(): void {
+  newGame(
+    cellMap: GameMap = [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ]
+  ): void {
+    this.cellMap = cellMap;
     this.emptyPositions = [];
     for (const row of RowValues) {
       for (const column of ColumnValues) {
-        this.cellMap[row][column] = 0;
         this.emptyPositions.push({ row, column });
       }
     }
