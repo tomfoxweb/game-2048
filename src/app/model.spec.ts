@@ -179,7 +179,7 @@ interface ShiftTest {
   gameMapAfterShift: GameMap;
 }
 
-describe('Model: shift: to last line', () => {
+describe('Model: shift', () => {
   let view: Viewable;
   let model: Model;
   let randomizer: TestRandom;
@@ -294,6 +294,27 @@ describe('Model: shift: to last line', () => {
       ],
     },
     {
+      title: 'shift up one new cell',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [{ position: { row: 3, column: 3 }, newCell: 2 }],
+      gameMapPreload: [
+        [4, 32, 16, 0],
+        [32, 0, 8, 128],
+        [2, 4, 0, 512],
+        [16, 8, 64, 1024],
+      ],
+      gameMapAfterShift: [
+        [4, 32, 16, 128],
+        [32, 2, 8, 512],
+        [2, 4, 4, 1024],
+        [16, 8, 64, 2],
+      ],
+    },
+    {
       title: 'shift right',
       fnName: 'right',
       newCellsNewGame: [
@@ -395,6 +416,27 @@ describe('Model: shift: to last line', () => {
         [4, 32, 2, 8],
         [8, 2, 64, 2],
         [128, 16, 4, 2],
+        [2, 4, 256, 128],
+      ],
+    },
+    {
+      title: 'shift right one new cell',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [{ position: { row: 0, column: 0 }, newCell: 4 }],
+      gameMapPreload: [
+        [0, 32, 4, 8],
+        [8, 0, 64, 2],
+        [128, 16, 0, 64],
+        [2, 4, 256, 128],
+      ],
+      gameMapAfterShift: [
+        [4, 32, 4, 8],
+        [8, 2, 64, 2],
+        [128, 16, 4, 64],
         [2, 4, 256, 128],
       ],
     },
@@ -504,6 +546,27 @@ describe('Model: shift: to last line', () => {
       ],
     },
     {
+      title: 'shift down one new cell',
+      fnName: 'down',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [{ position: { row: 0, column: 1 }, newCell: 2 }],
+      gameMapPreload: [
+        [8, 128, 4, 256],
+        [4, 0, 32, 2],
+        [2, 64, 0, 128],
+        [8, 0, 16, 32],
+      ],
+      gameMapAfterShift: [
+        [8, 2, 4, 256],
+        [4, 128, 32, 2],
+        [2, 2, 4, 128],
+        [8, 64, 16, 32],
+      ],
+    },
+    {
       title: 'shift left',
       fnName: 'left',
       newCellsNewGame: [
@@ -606,6 +669,27 @@ describe('Model: shift: to last line', () => {
         [32, 2, 16, 2],
         [64, 128, 4, 32],
         [2, 1024, 4, 8],
+      ],
+    },
+    {
+      title: 'shift left one new cell',
+      fnName: 'left',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [{ position: { row: 1, column: 3 }, newCell: 4 }],
+      gameMapPreload: [
+        [16, 8, 2, 4],
+        [0, 0, 16, 128],
+        [64, 256, 0, 32],
+        [2, 1024, 8, 4],
+      ],
+      gameMapAfterShift: [
+        [16, 8, 2, 4],
+        [2, 16, 128, 4],
+        [64, 256, 4, 32],
+        [2, 1024, 8, 4],
       ],
     },
   ];
