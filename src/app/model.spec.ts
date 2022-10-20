@@ -740,3 +740,128 @@ describe('Model: shift: multiple move', () => {
     });
   });
 });
+
+describe('Model: shift: no move', () => {
+  let view: Viewable;
+  let model: Model;
+  let randomizer: TestRandom;
+  let spyPosition: any;
+  let spyCell: any;
+  let spyViewSetCell: any;
+  const start1: Position = { row: 1, column: 0 };
+  const start2: Position = { row: 3, column: 2 };
+  const cell1: NewCell = 2;
+  const cell2: NewCell = 4;
+
+  const tests: ShiftTest[] = [
+    {
+      title: 'shift up',
+      fnName: 'up',
+      movements: [],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 4096, 8192, 65536],
+        [0, 32, 16, 64],
+        [64, 256, 8, 512],
+        [128, 1024, 0, 2048],
+      ],
+    },
+    {
+      title: 'shift right',
+      fnName: 'right',
+      movements: [],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 4096, 8192, 65536],
+        [0, 32, 16, 64],
+        [64, 256, 8, 512],
+        [128, 1024, 0, 2048],
+      ],
+    },
+    {
+      title: 'shift down',
+      fnName: 'down',
+      movements: [],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 4096, 8192, 65536],
+        [0, 32, 16, 64],
+        [64, 256, 8, 512],
+        [128, 1024, 0, 2048],
+      ],
+    },
+    {
+      title: 'shift left',
+      fnName: 'left',
+      movements: [],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 4096, 8192, 65536],
+        [0, 32, 16, 64],
+        [64, 256, 8, 512],
+        [128, 1024, 0, 2048],
+      ],
+    },
+  ];
+
+  beforeEach(() => {
+    view = new TestView();
+    spyViewSetCell = spyOn(view, 'setCell');
+    randomizer = new TestRandom();
+    model = new Model(view, randomizer);
+  });
+
+  afterEach(() => {
+    spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
+  });
+
+  afterAll(() => {
+    spyViewSetCell.calls.reset();
+    spyPosition.calls.reset();
+    spyCell.calls.reset();
+  });
+
+  tests.forEach((test) => {
+    it(test.title, () => {
+      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+        start1,
+        start2
+      );
+      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
+        cell1,
+        cell2
+      );
+      model.newGame(test.gameMap);
+      spyViewSetCell.calls.reset();
+      spyPosition.calls.reset();
+      spyCell.calls.reset();
+
+      const endPositions = test.movements.map((movement) => movement.end);
+      randomizer.randomPosition = jasmine
+        .createSpy()
+        .and.returnValues(...endPositions);
+      randomizer.randomNewCell = jasmine
+        .createSpy()
+        .and.returnValues(...test.newCells);
+
+      switch (test.fnName) {
+        case 'up':
+          model.shiftUp();
+          break;
+        case 'right':
+          model.shiftRight();
+          break;
+        case 'down':
+          model.shiftDown();
+          break;
+        case 'left':
+          model.shiftLeft();
+          break;
+      }
+
+      expect(view.setCell).not.toHaveBeenCalled();
+    });
+  });
+});
