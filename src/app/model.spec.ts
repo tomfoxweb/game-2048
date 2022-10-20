@@ -168,6 +168,8 @@ describe('Model: new game', () => {
 interface ShiftTest {
   title: string;
   fnName: 'up' | 'right' | 'down' | 'left';
+  startPosition1: Position;
+  startPosition2: Position;
   endPosition1: Position;
   endPosition2: Position;
   cell1: NewCell;
@@ -182,32 +184,31 @@ describe('Model: shift: to last line', () => {
   let spyPosition: any;
   let spyCell: any;
   let spyViewSetCell: any;
-  let startPos1: Position;
-  let startPos2: Position;
-  let cell1: NewCell;
-  let cell2: NewCell;
-
-  startPos1 = { row: 1, column: 1 };
-  startPos2 = { row: 2, column: 2 };
-  cell1 = 2;
-  cell2 = 4;
+  const startPosition1: Position = { row: 1, column: 1 };
+  const startPosition2: Position = { row: 2, column: 2 };
+  const cell1: NewCell = 2;
+  const cell2: NewCell = 4;
 
   const tests: ShiftTest[] = [
     {
       title: 'shift up',
       fnName: 'up',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 0, column: 1 },
       endPosition2: { row: 0, column: 2 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
     },
     {
       title: 'shift up preloaded map',
       fnName: 'up',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 0, column: 1 },
       endPosition2: { row: 0, column: 2 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
       gameMap: [
         [32, 0, 0, 2],
         [16, 0, 0, 8],
@@ -218,18 +219,22 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift right',
       fnName: 'right',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 1, column: 3 },
       endPosition2: { row: 2, column: 3 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
     },
     {
       title: 'shift right preloaded map',
       fnName: 'right',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 1, column: 3 },
       endPosition2: { row: 2, column: 3 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
       gameMap: [
         [0, 0, 0, 2],
         [0, 0, 0, 0],
@@ -240,18 +245,22 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift down',
       fnName: 'down',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 3, column: 1 },
       endPosition2: { row: 3, column: 2 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
     },
     {
       title: 'shift down preloaded map',
       fnName: 'down',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 3, column: 1 },
       endPosition2: { row: 3, column: 2 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
       gameMap: [
         [0, 0, 0, 0],
         [16, 0, 0, 4],
@@ -262,18 +271,22 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift left',
       fnName: 'left',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 1, column: 0 },
       endPosition2: { row: 2, column: 0 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
     },
     {
       title: 'shift left preloaded map',
       fnName: 'left',
+      startPosition1: startPosition1,
+      startPosition2: startPosition2,
       endPosition1: { row: 1, column: 0 },
       endPosition2: { row: 2, column: 0 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
       gameMap: [
         [8, 2, 0, 0],
         [0, 0, 0, 0],
@@ -288,8 +301,8 @@ describe('Model: shift: to last line', () => {
     spyViewSetCell = spyOn(view, 'setCell');
     randomizer = new TestRandom();
     spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-      startPos1,
-      startPos2
+      startPosition1,
+      startPosition2
     );
     spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
     model = new Model(view, randomizer);
@@ -341,18 +354,18 @@ describe('Model: shift: to last line', () => {
         test.cell1
       );
       expect(view.setCell).toHaveBeenCalledWith(
-        startPos1.row,
-        startPos1.column,
+        startPosition1.row,
+        startPosition1.column,
         0
       );
       expect(view.setCell).toHaveBeenCalledWith(
-        test.endPosition1.row,
-        test.endPosition1.column,
-        test.cell1
+        test.endPosition2.row,
+        test.endPosition2.column,
+        test.cell2
       );
       expect(view.setCell).toHaveBeenCalledWith(
-        startPos2.row,
-        startPos2.column,
+        startPosition2.row,
+        startPosition2.column,
         0
       );
     });
@@ -363,16 +376,9 @@ describe('Model: shift: already on last line', () => {
   let view: Viewable;
   let model: Model;
   let randomizer: TestRandom;
-  let spyPosition: any;
-  let spyCell: any;
   let spyViewSetCell: any;
-  let startPos1: Position;
-  let startPos2: Position;
   let cell1: NewCell;
   let cell2: NewCell;
-
-  startPos1 = { row: 0, column: 1 };
-  startPos2 = { row: 0, column: 2 };
   cell1 = 2;
   cell2 = 4;
 
@@ -380,10 +386,12 @@ describe('Model: shift: already on last line', () => {
     {
       title: 'shift up',
       fnName: 'up',
+      startPosition1: { row: 0, column: 1 },
+      startPosition2: { row: 0, column: 2 },
       endPosition1: { row: 0, column: 1 },
       endPosition2: { row: 0, column: 2 },
-      cell1: 2,
-      cell2: 4,
+      cell1: cell1,
+      cell2: cell2,
     },
   ];
 
@@ -391,39 +399,21 @@ describe('Model: shift: already on last line', () => {
     view = new TestView();
     spyViewSetCell = spyOn(view, 'setCell');
     randomizer = new TestRandom();
-    spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-      startPos1,
-      startPos2
-    );
-    spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
     model = new Model(view, randomizer);
-    model.newGame();
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  afterEach(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  afterAll(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
   });
 
   tests.forEach((test) => {
     it(test.title, () => {
-      randomizer.randomPosition = jasmine
-        .createSpy()
-        .and.returnValues(test.endPosition1, test.endPosition2);
-      randomizer.randomNewCell = jasmine
-        .createSpy()
-        .and.returnValues(test.cell1, test.cell2);
-
+      spyOn(randomizer, 'randomPosition').and.returnValues(
+        test.endPosition1,
+        test.endPosition2
+      );
+      spyOn(randomizer, 'randomNewCell').and.returnValues(
+        test.cell1,
+        test.cell2
+      );
+      model.newGame();
+      spyViewSetCell.calls.reset();
       switch (test.fnName) {
         case 'up':
           model.shiftUp();
