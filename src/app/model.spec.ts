@@ -581,6 +581,46 @@ describe('Model: shift: multiple move', () => {
         [128, 0, 0, 0],
       ],
     },
+    {
+      title: 'shift down',
+      fnName: 'down',
+      movements: [
+        { begin: start1, end: { row: 2, column: 0 }, cell: cell1 },
+        { begin: { row: 0, column: 0 }, end: { row: 1, column: 0 }, cell: 32 },
+        {
+          begin: { row: 2, column: 1 },
+          end: { row: 3, column: 1 },
+          cell: 1024,
+        },
+        {
+          begin: { row: 0, column: 1 },
+          end: { row: 2, column: 1 },
+          cell: 256,
+        },
+        {
+          begin: { row: 1, column: 2 },
+          end: { row: 2, column: 2 },
+          cell: 16,
+        },
+        {
+          begin: { row: 1, column: 3 },
+          end: { row: 2, column: 3 },
+          cell: 512,
+        },
+        {
+          begin: { row: 0, column: 3 },
+          end: { row: 1, column: 3 },
+          cell: 64,
+        },
+      ],
+      newCells: [cell1, cell2],
+      gameMap: [
+        [32, 256, 0, 64],
+        [0, 0, 16, 512],
+        [0, 1024, 0, 0],
+        [128, 0, 0, 2048],
+      ],
+    },
   ];
 
   beforeEach(() => {
