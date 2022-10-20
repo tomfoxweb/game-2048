@@ -1,6 +1,8 @@
 import {
   Cell,
+  Column,
   ColumnValues,
+  COLUMN_COUNT,
   GameMap,
   Position,
   Row,
@@ -84,10 +86,22 @@ export class Model {
   }
 
   shiftRight() {
-    this.view.setCell(1, 3, 2);
-    this.view.setCell(1, 1, 0);
-    this.view.setCell(2, 3, 4);
-    this.view.setCell(2, 2, 0);
+    for (const row of RowValues) {
+      for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
+        if (this.cellMap[row][col1] !== 0) {
+          continue;
+        }
+        for (let col2 = col1 - 1; col2 >= 0; col2--) {
+          if (this.cellMap[row][col2] !== 0) {
+            this.cellMap[row][col1] = this.cellMap[row][col2];
+            this.cellMap[row][col2] = 0;
+            this.view.setCell(row, col1 as Column, this.cellMap[row][col1]);
+            this.view.setCell(row, col2 as Column, this.cellMap[row][col2]);
+            break;
+          }
+        }
+      }
+    }
   }
 
   shiftDown() {

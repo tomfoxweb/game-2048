@@ -6,6 +6,7 @@ export const CellValues = [
 ] as const;
 
 export const ROW_COUNT = RowValues.length;
+export const COLUMN_COUNT = ColumnValues.length;
 
 export type Row = typeof RowValues[number];
 export type Column = typeof ColumnValues[number];
