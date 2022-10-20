@@ -244,8 +244,8 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [0, 2, 2, 0],
         [0, 0, 0, 0],
-        [2, 0, 0, 0],
-        [0, 0, 0, 2],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
       ],
     },
     {
@@ -279,7 +279,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 0 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
       gameMapPreload: [
         [2, 32, 16, 8],
         [32, 0, 8, 2],
@@ -300,7 +303,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [{ position: { row: 3, column: 3 }, newCell: 2 }],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 3 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
       gameMapPreload: [
         [4, 32, 16, 0],
         [32, 0, 8, 128],
@@ -405,7 +411,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [4, 32, 2, 8],
         [8, 0, 64, 2],
@@ -426,7 +435,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [{ position: { row: 0, column: 0 }, newCell: 4 }],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 0 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [0, 32, 4, 8],
         [8, 0, 64, 2],
@@ -531,7 +543,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [8, 128, 2, 256],
         [4, 0, 32, 4],
@@ -552,7 +567,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [{ position: { row: 0, column: 1 }, newCell: 2 }],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [8, 128, 4, 256],
         [4, 0, 32, 2],
@@ -657,7 +675,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [2, 4, 8, 4],
         [32, 0, 16, 2],
@@ -678,7 +699,10 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 1 }, newCell: 2 },
         { position: { row: 2, column: 2 }, newCell: 4 },
       ],
-      newCellsAfterShift: [{ position: { row: 1, column: 3 }, newCell: 4 }],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 3 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
       gameMapPreload: [
         [16, 8, 2, 4],
         [0, 0, 16, 128],
@@ -716,12 +740,12 @@ describe('Model: shift', () => {
   tests.forEach((test) => {
     it(test.title, () => {
       spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-        test.newCellsNewGame[0]?.position,
-        test.newCellsNewGame[1]?.position
+        test.newCellsNewGame[0].position,
+        test.newCellsNewGame[1].position
       );
       spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
-        test.newCellsNewGame[0]?.newCell,
-        test.newCellsNewGame[1]?.newCell
+        test.newCellsNewGame[0].newCell,
+        test.newCellsNewGame[1].newCell
       );
       model.newGame(test.gameMapPreload);
       spyViewSetCell.calls.reset();
@@ -731,14 +755,14 @@ describe('Model: shift', () => {
       randomizer.randomPosition = jasmine
         .createSpy()
         .and.returnValues(
-          test.newCellsAfterShift[0]?.position,
-          test.newCellsAfterShift[1]?.position
+          test.newCellsAfterShift[0].position,
+          test.newCellsAfterShift[1].position
         );
       randomizer.randomNewCell = jasmine
         .createSpy()
         .and.returnValues(
-          test.newCellsAfterShift[0]?.newCell,
-          test.newCellsAfterShift[1]?.newCell
+          test.newCellsAfterShift[0].newCell,
+          test.newCellsAfterShift[1].newCell
         );
 
       switch (test.fnName) {

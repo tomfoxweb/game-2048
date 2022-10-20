@@ -42,7 +42,9 @@ export class Model {
     this.emptyPositions = [];
     for (const row of RowValues) {
       for (const column of ColumnValues) {
-        this.emptyPositions.push({ row, column });
+        if (this.cellMap[row][column] === 0) {
+          this.emptyPositions.push({ row, column });
+        }
       }
     }
     this.addNewCellOnMap();
@@ -51,13 +53,14 @@ export class Model {
   }
 
   private addNewCellOnMap(): void {
+    if (this.emptyPositions.length === 0) {
+      return;
+    }
     const position = this.randomizer.randomPosition(this.emptyPositions);
     if (position === null || position === undefined) {
       return;
     }
-    if (!this.removeFromEmptyPositions(position)) {
-      return;
-    }
+    this.removeFromEmptyPositions(position);
     const newCell = this.randomizer.randomNewCell();
     this.cellMap[position.row][position.column] = newCell;
   }
@@ -71,15 +74,14 @@ export class Model {
     }
   }
 
-  private removeFromEmptyPositions(position: Position): boolean {
+  private removeFromEmptyPositions(position: Position): void {
     const index = this.emptyPositions.findIndex(
       (x) => x.row === position.row && x.column === position.column
     );
     if (index < 0) {
-      return false;
+      return;
     }
     this.emptyPositions.splice(index, 1);
-    return true;
   }
 
   private showGameMap(): void {
@@ -91,6 +93,7 @@ export class Model {
   }
 
   shiftUp(): void {
+    let hasMoved = false;
     for (const column of ColumnValues) {
       for (const row1 of RowValues) {
         if (this.cellMap[row1][column] !== 0) {
@@ -98,6 +101,7 @@ export class Model {
         }
         for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
           if (this.cellMap[row2][column] !== 0) {
+            hasMoved = true;
             this.cellMap[row1][column] = this.cellMap[row2][column];
             this.removeFromEmptyPositions({ row: row1, column: column });
             this.cellMap[row2][column] = 0;
@@ -107,8 +111,10 @@ export class Model {
         }
       }
     }
-    this.addNewCellOnMap();
-    this.addNewCellOnMap();
+    if (hasMoved) {
+      this.addNewCellOnMap();
+      this.addNewCellOnMap();
+    }
     this.showGameMap();
   }
 
