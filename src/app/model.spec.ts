@@ -165,15 +165,17 @@ describe('Model: new game', () => {
   });
 });
 
+interface Movement {
+  begin: Position;
+  end: Position;
+  cell: Cell;
+}
+
 interface ShiftTest {
   title: string;
   fnName: 'up' | 'right' | 'down' | 'left';
-  startPosition1: Position;
-  startPosition2: Position;
-  endPosition1: Position;
-  endPosition2: Position;
-  cell1: NewCell;
-  cell2: NewCell;
+  movements: Movement[];
+  newCells: NewCell[];
   gameMap?: GameMap;
 }
 
@@ -184,8 +186,8 @@ describe('Model: shift: to last line', () => {
   let spyPosition: any;
   let spyCell: any;
   let spyViewSetCell: any;
-  const startPosition1: Position = { row: 1, column: 1 };
-  const startPosition2: Position = { row: 2, column: 2 };
+  const start1: Position = { row: 1, column: 1 };
+  const start2: Position = { row: 2, column: 2 };
   const cell1: NewCell = 2;
   const cell2: NewCell = 4;
 
@@ -193,22 +195,20 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift up',
       fnName: 'up',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 0, column: 1 },
-      endPosition2: { row: 0, column: 2 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 0, column: 1 }, cell: cell1 },
+        { begin: start2, end: { row: 0, column: 2 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift up preloaded map',
       fnName: 'up',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 0, column: 1 },
-      endPosition2: { row: 0, column: 2 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 0, column: 1 }, cell: cell1 },
+        { begin: start2, end: { row: 0, column: 2 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
       gameMap: [
         [32, 0, 0, 2],
         [16, 0, 0, 8],
@@ -219,22 +219,20 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift right',
       fnName: 'right',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 1, column: 3 },
-      endPosition2: { row: 2, column: 3 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 1, column: 3 }, cell: cell1 },
+        { begin: start2, end: { row: 2, column: 3 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift right preloaded map',
       fnName: 'right',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 1, column: 3 },
-      endPosition2: { row: 2, column: 3 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 1, column: 3 }, cell: cell1 },
+        { begin: start2, end: { row: 2, column: 3 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
       gameMap: [
         [0, 0, 0, 2],
         [0, 0, 0, 0],
@@ -245,22 +243,20 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift down',
       fnName: 'down',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 3, column: 1 },
-      endPosition2: { row: 3, column: 2 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 3, column: 1 }, cell: cell1 },
+        { begin: start2, end: { row: 3, column: 2 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift down preloaded map',
       fnName: 'down',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 3, column: 1 },
-      endPosition2: { row: 3, column: 2 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 3, column: 1 }, cell: cell1 },
+        { begin: start2, end: { row: 3, column: 2 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
       gameMap: [
         [0, 0, 0, 0],
         [16, 0, 0, 4],
@@ -271,22 +267,20 @@ describe('Model: shift: to last line', () => {
     {
       title: 'shift left',
       fnName: 'left',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 1, column: 0 },
-      endPosition2: { row: 2, column: 0 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 1, column: 0 }, cell: cell1 },
+        { begin: start2, end: { row: 2, column: 0 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift left preloaded map',
       fnName: 'left',
-      startPosition1: startPosition1,
-      startPosition2: startPosition2,
-      endPosition1: { row: 1, column: 0 },
-      endPosition2: { row: 2, column: 0 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        { begin: start1, end: { row: 1, column: 0 }, cell: cell1 },
+        { begin: start2, end: { row: 2, column: 0 }, cell: cell2 },
+      ],
+      newCells: [cell1, cell2],
       gameMap: [
         [8, 2, 0, 0],
         [0, 0, 0, 0],
@@ -318,8 +312,8 @@ describe('Model: shift: to last line', () => {
   tests.forEach((test) => {
     it(test.title, () => {
       spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-        startPosition1,
-        startPosition2
+        start1,
+        start2
       );
       spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
         cell1,
@@ -330,12 +324,13 @@ describe('Model: shift: to last line', () => {
       spyPosition.calls.reset();
       spyCell.calls.reset();
 
+      const endPositions = test.movements.map((movement) => movement.end);
       randomizer.randomPosition = jasmine
         .createSpy()
-        .and.returnValues(test.endPosition1, test.endPosition2);
+        .and.returnValues(...endPositions);
       randomizer.randomNewCell = jasmine
         .createSpy()
-        .and.returnValues(test.cell1, test.cell2);
+        .and.returnValues(...test.newCells);
 
       switch (test.fnName) {
         case 'up':
@@ -352,26 +347,18 @@ describe('Model: shift: to last line', () => {
           break;
       }
 
-      expect(view.setCell).toHaveBeenCalledWith(
-        test.endPosition1.row,
-        test.endPosition1.column,
-        test.cell1
-      );
-      expect(view.setCell).toHaveBeenCalledWith(
-        startPosition1.row,
-        startPosition1.column,
-        0
-      );
-      expect(view.setCell).toHaveBeenCalledWith(
-        test.endPosition2.row,
-        test.endPosition2.column,
-        test.cell2
-      );
-      expect(view.setCell).toHaveBeenCalledWith(
-        startPosition2.row,
-        startPosition2.column,
-        0
-      );
+      for (const movement of test.movements) {
+        expect(view.setCell).toHaveBeenCalledWith(
+          movement.end.row,
+          movement.end.column,
+          movement.cell
+        );
+        expect(view.setCell).toHaveBeenCalledWith(
+          movement.begin.row,
+          movement.begin.column,
+          0
+        );
+      }
     });
   });
 });
@@ -390,42 +377,70 @@ describe('Model: shift: already on last line', () => {
     {
       title: 'shift up',
       fnName: 'up',
-      startPosition1: { row: 0, column: 1 },
-      startPosition2: { row: 0, column: 2 },
-      endPosition1: { row: 0, column: 1 },
-      endPosition2: { row: 0, column: 2 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        {
+          begin: { row: 0, column: 1 },
+          end: { row: 0, column: 1 },
+          cell: cell1,
+        },
+        {
+          begin: { row: 0, column: 2 },
+          end: { row: 0, column: 2 },
+          cell: cell2,
+        },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift right',
       fnName: 'right',
-      startPosition1: { row: 0, column: 3 },
-      startPosition2: { row: 1, column: 3 },
-      endPosition1: { row: 0, column: 3 },
-      endPosition2: { row: 1, column: 3 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        {
+          begin: { row: 1, column: 3 },
+          end: { row: 1, column: 3 },
+          cell: cell1,
+        },
+        {
+          begin: { row: 2, column: 3 },
+          end: { row: 2, column: 3 },
+          cell: cell2,
+        },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift down',
       fnName: 'down',
-      startPosition1: { row: 3, column: 2 },
-      startPosition2: { row: 3, column: 3 },
-      endPosition1: { row: 3, column: 2 },
-      endPosition2: { row: 3, column: 3 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        {
+          begin: { row: 3, column: 3 },
+          end: { row: 3, column: 3 },
+          cell: cell1,
+        },
+        {
+          begin: { row: 3, column: 2 },
+          end: { row: 3, column: 2 },
+          cell: cell2,
+        },
+      ],
+      newCells: [cell1, cell2],
     },
     {
       title: 'shift left',
       fnName: 'left',
-      startPosition1: { row: 2, column: 0 },
-      startPosition2: { row: 3, column: 0 },
-      endPosition1: { row: 2, column: 0 },
-      endPosition2: { row: 3, column: 0 },
-      cell1: cell1,
-      cell2: cell2,
+      movements: [
+        {
+          begin: { row: 1, column: 0 },
+          end: { row: 1, column: 0 },
+          cell: cell1,
+        },
+        {
+          begin: { row: 3, column: 0 },
+          end: { row: 3, column: 0 },
+          cell: cell2,
+        },
+      ],
+      newCells: [cell1, cell2],
     },
   ];
 
@@ -438,14 +453,9 @@ describe('Model: shift: already on last line', () => {
 
   tests.forEach((test) => {
     it(test.title, () => {
-      spyOn(randomizer, 'randomPosition').and.returnValues(
-        test.endPosition1,
-        test.endPosition2
-      );
-      spyOn(randomizer, 'randomNewCell').and.returnValues(
-        test.cell1,
-        test.cell2
-      );
+      const endPositions = test.movements.map((movement) => movement.end);
+      spyOn(randomizer, 'randomPosition').and.returnValues(...endPositions);
+      spyOn(randomizer, 'randomNewCell').and.returnValues(...test.newCells);
       model.newGame();
       spyViewSetCell.calls.reset();
       switch (test.fnName) {
