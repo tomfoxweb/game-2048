@@ -29,4 +29,20 @@ export class ControllerService {
     }
     this.model.newGame();
   }
+
+  shiftUp(): void {
+    this.model?.shiftUp();
+  }
+
+  shiftRight(): void {
+    this.model?.shiftRight();
+  }
+
+  shiftDown(): void {
+    this.model?.shiftDown();
+  }
+
+  shiftLeft(): void {
+    this.model?.shiftLeft();
+  }
 }

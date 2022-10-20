@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Cell, Column, ColumnValues, Row, RowValues } from './cell';
 import { ControllerService } from './controller.service';
 import { Viewable } from './viewable';
@@ -9,6 +9,24 @@ import { Viewable } from './viewable';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, Viewable {
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'ArrowUp':
+        this.controller.shiftUp();
+        break;
+      case 'ArrowRight':
+        this.controller.shiftRight();
+        break;
+      case 'ArrowDown':
+        this.controller.shiftDown();
+        break;
+      case 'ArrowLeft':
+        this.controller.shiftLeft();
+        break;
+    }
+  }
+
   title = 'game-2048';
   cells: Cell[] = [];
 
