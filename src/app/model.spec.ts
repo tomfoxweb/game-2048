@@ -182,168 +182,178 @@ describe('Model: shift', () => {
   let spyPosition: any;
   let spyCell: any;
   let spyViewSetCell: any;
-  const startPos1: Position = { row: 1, column: 1 };
-  const startPos2: Position = { row: 2, column: 2 };
-  const cell1: Cell = 2;
-  const cell2: Cell = 4;
+  let startPos1: Position;
+  let startPos2: Position;
+  let cell1: NewCell;
+  let cell2: NewCell;
 
-  const tests: ShiftTest[] = [
-    {
-      title: 'shift up',
-      fnName: 'up',
-      endPosition1: { row: 0, column: 1 },
-      endPosition2: { row: 0, column: 2 },
-      cell1: 2,
-      cell2: 4,
-    },
-    {
-      title: 'shift up preloaded map',
-      fnName: 'up',
-      endPosition1: { row: 0, column: 1 },
-      endPosition2: { row: 0, column: 2 },
-      cell1: 2,
-      cell2: 4,
-      gameMap: [
-        [0, 0, 0, 2],
-        [16, 0, 0, 0],
-        [0, 2, 0, 4],
-        [8, 4096, 0, 8],
-      ],
-    },
-    {
-      title: 'shift right',
-      fnName: 'right',
-      endPosition1: { row: 1, column: 3 },
-      endPosition2: { row: 2, column: 3 },
-      cell1: 2,
-      cell2: 4,
-    },
-    {
-      title: 'shift right preloaded map',
-      fnName: 'right',
-      endPosition1: { row: 1, column: 3 },
-      endPosition2: { row: 2, column: 3 },
-      cell1: 2,
-      cell2: 4,
-      gameMap: [
-        [0, 0, 0, 2],
-        [16, 0, 0, 0],
-        [0, 2, 0, 0],
-        [8, 4096, 0, 8],
-      ],
-    },
-    {
-      title: 'shift down',
-      fnName: 'down',
-      endPosition1: { row: 3, column: 1 },
-      endPosition2: { row: 3, column: 2 },
-      cell1: 2,
-      cell2: 4,
-    },
-    {
-      title: 'shift down preloaded map',
-      fnName: 'down',
-      endPosition1: { row: 3, column: 1 },
-      endPosition2: { row: 3, column: 2 },
-      cell1: 2,
-      cell2: 4,
-      gameMap: [
-        [0, 8, 4, 2],
-        [16, 0, 0, 0],
-        [32, 0, 0, 0],
-        [8, 0, 0, 8],
-      ],
-    },
-    {
-      title: 'shift left',
-      fnName: 'left',
-      endPosition1: { row: 1, column: 0 },
-      endPosition2: { row: 2, column: 0 },
-      cell1: 2,
-      cell2: 4,
-    },
-    {
-      title: 'shift left preloaded map',
-      fnName: 'left',
-      endPosition1: { row: 1, column: 0 },
-      endPosition2: { row: 2, column: 0 },
-      cell1: 2,
-      cell2: 4,
-      gameMap: [
-        [0, 8, 4, 2],
-        [0, 0, 32, 16],
-        [0, 0, 0, 4],
-        [8, 2, 64, 8],
-      ],
-    },
-  ];
+  describe('to last line', () => {
+    startPos1 = { row: 1, column: 1 };
+    startPos2 = { row: 2, column: 2 };
+    cell1 = 2;
+    cell2 = 4;
 
-  beforeEach(() => {
-    view = new TestView();
-    spyViewSetCell = spyOn(view, 'setCell');
-    randomizer = new TestRandom();
-    spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
-      startPos1,
-      startPos2
-    );
-    spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(cell1, cell2);
-    model = new Model(view, randomizer);
-    model.newGame();
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
+    const tests: ShiftTest[] = [
+      {
+        title: 'shift up',
+        fnName: 'up',
+        endPosition1: { row: 0, column: 1 },
+        endPosition2: { row: 0, column: 2 },
+        cell1: 2,
+        cell2: 4,
+      },
+      {
+        title: 'shift up preloaded map',
+        fnName: 'up',
+        endPosition1: { row: 0, column: 1 },
+        endPosition2: { row: 0, column: 2 },
+        cell1: 2,
+        cell2: 4,
+        gameMap: [
+          [0, 0, 0, 2],
+          [16, 0, 0, 0],
+          [0, 2, 0, 4],
+          [8, 4096, 0, 8],
+        ],
+      },
+      {
+        title: 'shift right',
+        fnName: 'right',
+        endPosition1: { row: 1, column: 3 },
+        endPosition2: { row: 2, column: 3 },
+        cell1: 2,
+        cell2: 4,
+      },
+      {
+        title: 'shift right preloaded map',
+        fnName: 'right',
+        endPosition1: { row: 1, column: 3 },
+        endPosition2: { row: 2, column: 3 },
+        cell1: 2,
+        cell2: 4,
+        gameMap: [
+          [0, 0, 0, 2],
+          [16, 0, 0, 0],
+          [0, 2, 0, 0],
+          [8, 4096, 0, 8],
+        ],
+      },
+      {
+        title: 'shift down',
+        fnName: 'down',
+        endPosition1: { row: 3, column: 1 },
+        endPosition2: { row: 3, column: 2 },
+        cell1: 2,
+        cell2: 4,
+      },
+      {
+        title: 'shift down preloaded map',
+        fnName: 'down',
+        endPosition1: { row: 3, column: 1 },
+        endPosition2: { row: 3, column: 2 },
+        cell1: 2,
+        cell2: 4,
+        gameMap: [
+          [0, 8, 4, 2],
+          [16, 0, 0, 0],
+          [32, 0, 0, 0],
+          [8, 0, 0, 8],
+        ],
+      },
+      {
+        title: 'shift left',
+        fnName: 'left',
+        endPosition1: { row: 1, column: 0 },
+        endPosition2: { row: 2, column: 0 },
+        cell1: 2,
+        cell2: 4,
+      },
+      {
+        title: 'shift left preloaded map',
+        fnName: 'left',
+        endPosition1: { row: 1, column: 0 },
+        endPosition2: { row: 2, column: 0 },
+        cell1: 2,
+        cell2: 4,
+        gameMap: [
+          [0, 8, 4, 2],
+          [0, 0, 32, 16],
+          [0, 0, 0, 4],
+          [8, 2, 64, 8],
+        ],
+      },
+    ];
 
-  afterEach(() => {
-    spyViewSetCell.calls.reset();
-    spyPosition.calls.reset();
-    spyCell.calls.reset();
-  });
-
-  tests.forEach((test) => {
-    it(test.title, () => {
-      randomizer.randomPosition = jasmine
-        .createSpy()
-        .and.returnValues(test.endPosition1, test.endPosition2);
-      randomizer.randomNewCell = jasmine
-        .createSpy()
-        .and.returnValues(test.cell1, test.cell2);
-
-      switch (test.fnName) {
-        case 'up':
-          model.shiftUp();
-          break;
-        case 'right':
-          model.shiftRight();
-          break;
-        case 'down':
-          model.shiftDown();
-          break;
-        case 'left':
-          model.shiftLeft();
-          break;
-      }
-
-      expect(view.setCell).toHaveBeenCalledWith(
-        test.endPosition1.row,
-        test.endPosition1.column,
-        test.cell1
+    beforeEach(() => {
+      view = new TestView();
+      spyViewSetCell = spyOn(view, 'setCell');
+      randomizer = new TestRandom();
+      spyPosition = spyOn(randomizer, 'randomPosition').and.returnValues(
+        startPos1,
+        startPos2
       );
-      expect(view.setCell).toHaveBeenCalledWith(
-        startPos1.row,
-        startPos1.column,
-        0
+      spyCell = spyOn(randomizer, 'randomNewCell').and.returnValues(
+        cell1,
+        cell2
       );
-      expect(view.setCell).toHaveBeenCalledWith(
-        test.endPosition1.row,
-        test.endPosition1.column,
-        test.cell1
-      );
-      expect(view.setCell).toHaveBeenCalledWith(
-        startPos2.row,
-        startPos2.column,
-        0
-      );
+      model = new Model(view, randomizer);
+      model.newGame();
+      spyViewSetCell.calls.reset();
+      spyPosition.calls.reset();
+      spyCell.calls.reset();
+    });
+
+    afterEach(() => {
+      spyViewSetCell.calls.reset();
+      spyPosition.calls.reset();
+      spyCell.calls.reset();
+    });
+
+    tests.forEach((test) => {
+      it(test.title, () => {
+        randomizer.randomPosition = jasmine
+          .createSpy()
+          .and.returnValues(test.endPosition1, test.endPosition2);
+        randomizer.randomNewCell = jasmine
+          .createSpy()
+          .and.returnValues(test.cell1, test.cell2);
+
+        switch (test.fnName) {
+          case 'up':
+            model.shiftUp();
+            break;
+          case 'right':
+            model.shiftRight();
+            break;
+          case 'down':
+            model.shiftDown();
+            break;
+          case 'left':
+            model.shiftLeft();
+            break;
+        }
+
+        expect(view.setCell).toHaveBeenCalledWith(
+          test.endPosition1.row,
+          test.endPosition1.column,
+          test.cell1
+        );
+        expect(view.setCell).toHaveBeenCalledWith(
+          startPos1.row,
+          startPos1.column,
+          0
+        );
+        expect(view.setCell).toHaveBeenCalledWith(
+          test.endPosition1.row,
+          test.endPosition1.column,
+          test.cell1
+        );
+        expect(view.setCell).toHaveBeenCalledWith(
+          startPos2.row,
+          startPos2.column,
+          0
+        );
+      });
     });
   });
 });
