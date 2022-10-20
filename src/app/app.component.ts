@@ -9,22 +9,24 @@ import { Viewable } from './viewable';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, Viewable {
-  @HostListener('keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent) {
-    switch (event.key) {
-      case 'ArrowUp':
-        this.controller.shiftUp();
-        break;
-      case 'ArrowRight':
-        this.controller.shiftRight();
-        break;
-      case 'ArrowDown':
-        this.controller.shiftDown();
-        break;
-      case 'ArrowLeft':
-        this.controller.shiftLeft();
-        break;
-    }
+  @HostListener('window:keydown.ArrowUp', ['$event'])
+  handleArrowUp(event: KeyboardEvent) {
+    this.controller.shiftUp();
+  }
+
+  @HostListener('window:keydown.ArrowRight', ['$event'])
+  handleArrowRight(event: KeyboardEvent) {
+    this.controller.shiftRight();
+  }
+
+  @HostListener('window:keydown.ArrowDown', ['$event'])
+  handleArrowDown(event: KeyboardEvent) {
+    this.controller.shiftDown();
+  }
+
+  @HostListener('window:keydown.ArrowLeft', ['$event'])
+  handleArrowLeft(event: KeyboardEvent) {
+    this.controller.shiftLeft();
   }
 
   title = 'game-2048';
