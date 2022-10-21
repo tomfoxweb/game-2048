@@ -359,6 +359,54 @@ describe('Model: shift', () => {
       ],
     },
     {
+      title: 'shift up preload nomove -> combine',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 3, column: 1 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 2, 2, 2],
+        [8, 32, 16, 128],
+        [32, 2, 4, 4],
+        [16, 0, 0, 128],
+      ],
+      gameMapAfterShift: [
+        [4, 2, 2, 2],
+        [8, 32, 16, 128],
+        [32, 4, 8, 4],
+        [16, 2, 2, 128],
+      ],
+    },
+    {
+      title: 'shift up preload nomove -> combine -> one new cell',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 3, column: 1 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 2 },
+        { position: { row: 3, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 2, 2, 2],
+        [8, 32, 16, 128],
+        [32, 2, 8, 4],
+        [16, 0, 0, 128],
+      ],
+      gameMapAfterShift: [
+        [4, 2, 2, 2],
+        [8, 32, 16, 128],
+        [32, 4, 8, 4],
+        [16, 2, 4, 128],
+      ],
+    },
+    {
       title: 'shift up preload move -> combine',
       fnName: 'up',
       newCellsNewGame: [
