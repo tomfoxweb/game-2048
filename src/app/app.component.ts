@@ -32,14 +32,12 @@ export class AppComponent implements OnInit, Viewable {
   @HostListener('window:pointerdown', ['$event'])
   handlePointerDown(event: PointerEvent) {
     this.setStartTouchPosition(event.clientX, event.clientX);
-    return false;
   }
 
   @HostListener('window:pointerup', ['$event'])
   handlePointerUp(event: PointerEvent) {
     this.setEndTouchPosition(event.clientX, event.clientX);
     this.processPointerMove();
-    return false;
   }
 
   @HostListener('window:touchstart', ['$event'])
@@ -49,19 +47,16 @@ export class AppComponent implements OnInit, Viewable {
       const y = event.changedTouches[0].clientY;
       this.setStartTouchPosition(x, y);
     }
-    return false;
   }
 
   @HostListener('window:touchend', ['$event'])
   handleTouchEnd(event: TouchEvent) {
     if (event.changedTouches.length > 0) {
-      event.preventDefault();
       const x = event.changedTouches[0].clientX;
       const y = event.changedTouches[0].clientY;
       this.setEndTouchPosition(x, y);
       this.processPointerMove();
     }
-    return false;
   }
 
   title = 'game-2048';
