@@ -599,6 +599,54 @@ describe('Model: shift', () => {
       ],
     },
     {
+      title: 'shift right multiple combine',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 2 }, newCell: 4 },
+        { position: { row: 2, column: 1 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 0, 2, 8],
+        [8, 4, 8, 8],
+        [0, 2, 2, 8],
+        [16, 8, 8, 64],
+      ],
+      gameMapAfterShift: [
+        [0, 0, 4, 16],
+        [0, 8, 4, 16],
+        [0, 2, 0, 16],
+        [0, 0, 32, 64],
+      ],
+    },
+    {
+      title: 'shift right combine one new cell',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 0 }, newCell: 4 },
+        { position: { row: 2, column: 1 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 0, 4, 8],
+        [8, 4, 16, 8],
+        [0, 4, 2, 8],
+        [16, 8, 32, 64],
+      ],
+      gameMapAfterShift: [
+        [4, 2, 4, 8],
+        [8, 4, 16, 8],
+        [4, 8, 2, 8],
+        [16, 8, 32, 64],
+      ],
+    },
+    {
       title: 'shift down',
       fnName: 'down',
       newCellsNewGame: [
