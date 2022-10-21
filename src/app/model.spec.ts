@@ -581,6 +581,24 @@ describe('Model: shift', () => {
       ],
     },
     {
+      title: 'shift right combine -> move',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 2, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 2, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapAfterShift: [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 4, 2, 4],
+        [0, 0, 0, 0],
+      ],
+    },
+    {
       title: 'shift down',
       fnName: 'down',
       newCellsNewGame: [
