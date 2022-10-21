@@ -724,6 +724,31 @@ describe('Model: shift', () => {
       gameOver: true,
     },
     {
+      title: 'shift right combine game over',
+      fnName: 'right',
+      newCellsNewGame: [
+        { position: { row: 0, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 1 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 0 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 16, 0, 2],
+        [8, 32, 64, 128],
+        [16, 0, 32, 8],
+        [32, 8, 16, 256],
+      ],
+      gameMapAfterShift: [
+        [2, 4, 16, 4],
+        [8, 32, 64, 128],
+        [16, 4, 32, 8],
+        [32, 8, 16, 256],
+      ],
+      gameOver: true,
+    },
+    {
       title: 'shift down',
       fnName: 'down',
       newCellsNewGame: [
