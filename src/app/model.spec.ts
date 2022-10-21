@@ -803,6 +803,30 @@ describe('Model: shift', () => {
       ],
     },
     {
+      title: 'shift down combine one new cell',
+      fnName: 'down',
+      newCellsNewGame: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 3 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 1 }, newCell: 2 },
+        { position: { row: 1, column: 0 }, newCell: 4 },
+      ],
+      gameMapPreload: [
+        [4, 0, 256, 2],
+        [8, 2, 32, 4],
+        [16, 8, 64, 0],
+        [8, 16, 128, 8],
+      ],
+      gameMapAfterShift: [
+        [4, 2, 256, 2],
+        [8, 4, 32, 4],
+        [16, 8, 64, 2],
+        [8, 16, 128, 8],
+      ],
+    },
+    {
       title: 'shift left',
       fnName: 'left',
       newCellsNewGame: [
