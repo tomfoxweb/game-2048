@@ -179,6 +179,7 @@ interface ShiftTest {
   newCellsAfterShift: NewCellPosition[];
   gameMapPreload?: GameMap;
   gameMapAfterShift: GameMap;
+  gameOver?: boolean;
 }
 
 describe('Model: shift', () => {
@@ -188,6 +189,7 @@ describe('Model: shift', () => {
   let spyPosition: any;
   let spyCell: any;
   let spyViewSetCell: any;
+  let spyViewGameOver: any;
 
   const tests: ShiftTest[] = [
     {
@@ -429,6 +431,31 @@ describe('Model: shift', () => {
         [0, 0, 2, 0],
         [0, 4, 0, 0],
       ],
+    },
+    {
+      title: 'shift up game over',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 1, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 8, 16, 2],
+        [8, 0, 0, 128],
+        [2, 4, 8, 16],
+        [16, 8, 2, 4],
+      ],
+      gameMapAfterShift: [
+        [4, 8, 16, 2],
+        [8, 2, 4, 128],
+        [2, 4, 8, 16],
+        [16, 8, 2, 4],
+      ],
+      gameOver: true,
     },
     {
       title: 'shift right',
@@ -1011,18 +1038,21 @@ describe('Model: shift', () => {
   beforeEach(() => {
     view = new TestView();
     spyViewSetCell = spyOn(view, 'setCell');
+    spyViewGameOver = spyOn(view, 'showGameOver');
     randomizer = new TestRandom();
     model = new Model(view, randomizer);
   });
 
   afterEach(() => {
     spyViewSetCell.calls.reset();
+    spyViewGameOver.calls.reset();
     spyPosition.calls.reset();
     spyCell.calls.reset();
   });
 
   afterAll(() => {
     spyViewSetCell.calls.reset();
+    spyViewGameOver.calls.reset();
     spyPosition.calls.reset();
     spyCell.calls.reset();
   });
@@ -1039,6 +1069,7 @@ describe('Model: shift', () => {
       );
       model.newGame(test.gameMapPreload);
       spyViewSetCell.calls.reset();
+      spyViewGameOver.calls.reset();
       spyPosition.calls.reset();
       spyCell.calls.reset();
 
@@ -1078,6 +1109,10 @@ describe('Model: shift', () => {
             test.gameMapAfterShift[row][column]
           );
         }
+      }
+
+      if (test.gameOver) {
+        expect(view.showGameOver).toHaveBeenCalled();
       }
     });
   });

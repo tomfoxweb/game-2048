@@ -93,9 +93,81 @@ export class Model {
   }
 
   private checkForGameOver(): void {
-    if (this.emptyPositions.length === 0) {
+    if (this.emptyPositions.length !== 0) {
+      return;
+    }
+    const canCombine =
+      this.canCombineLeft() ||
+      this.canCombineRight() ||
+      this.canCombineDown() ||
+      this.canCombineUp();
+    if (!canCombine) {
       this.view.showGameOver();
     }
+  }
+
+  private canCombineUp(): boolean {
+    for (const column of ColumnValues) {
+      for (let row = 0; row < ROW_COUNT - 1; row++) {
+        const firstCell = this.cellMap[row][column];
+        if (firstCell === 0) {
+          continue;
+        }
+        const secondCell = this.cellMap[row + 1][column];
+        if (firstCell === secondCell) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private canCombineRight(): boolean {
+    for (const row of RowValues) {
+      for (let column = COLUMN_COUNT - 1; column > 0; column--) {
+        const firstCell = this.cellMap[row][column];
+        if (firstCell === 0) {
+          continue;
+        }
+        const secondCell = this.cellMap[row][column - 1];
+        if (firstCell === secondCell) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private canCombineDown(): boolean {
+    for (const column of ColumnValues) {
+      for (let row = ROW_COUNT - 1; row > 0; row--) {
+        const firstCell = this.cellMap[row][column];
+        if (firstCell === 0) {
+          continue;
+        }
+        const secondCell = this.cellMap[row - 1][column];
+        if (firstCell === secondCell) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private canCombineLeft(): boolean {
+    for (const row of RowValues) {
+      for (let column = 0; column < COLUMN_COUNT - 1; column++) {
+        const firstCell = this.cellMap[row][column];
+        if (firstCell === 0) {
+          continue;
+        }
+        const secondCell = this.cellMap[row][column + 1];
+        if (firstCell === secondCell) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   shiftUp(): void {
