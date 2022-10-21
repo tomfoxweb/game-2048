@@ -31,15 +31,37 @@ export class AppComponent implements OnInit, Viewable {
 
   @HostListener('window:pointerdown', ['$event'])
   handlePointerDown(event: PointerEvent) {
-    event.preventDefault();
-    this.setStartTouchPosition(event);
+    this.setStartTouchPosition(event.clientX, event.clientX);
+    return false;
   }
 
   @HostListener('window:pointerup', ['$event'])
   handlePointerUp(event: PointerEvent) {
-    event.preventDefault();
-    this.setEndTouchPosition(event);
+    this.setEndTouchPosition(event.clientX, event.clientX);
     this.processPointerMove();
+    return false;
+  }
+
+  @HostListener('window:touchstart', ['$event'])
+  handleTouchDown(event: TouchEvent) {
+    if (event.changedTouches.length > 0) {
+      const x = event.changedTouches[0].clientX;
+      const y = event.changedTouches[0].clientY;
+      this.setStartTouchPosition(x, y);
+    }
+    return false;
+  }
+
+  @HostListener('window:touchend', ['$event'])
+  handleTouchEnd(event: TouchEvent) {
+    if (event.changedTouches.length > 0) {
+      event.preventDefault();
+      const x = event.changedTouches[0].clientX;
+      const y = event.changedTouches[0].clientY;
+      this.setEndTouchPosition(x, y);
+      this.processPointerMove();
+    }
+    return false;
   }
 
   title = 'game-2048';
@@ -77,14 +99,14 @@ export class AppComponent implements OnInit, Viewable {
     }, 100);
   }
 
-  private setStartTouchPosition(event: PointerEvent): void {
-    this.touchStartX = event.clientX;
-    this.touchStartY = event.clientY;
+  private setStartTouchPosition(x: number, y: number): void {
+    this.touchStartX = x;
+    this.touchStartY = y;
   }
 
-  private setEndTouchPosition(event: PointerEvent): void {
-    this.touchEndX = event.clientX;
-    this.touchEndY = event.clientY;
+  private setEndTouchPosition(x: number, y: number): void {
+    this.touchEndX = x;
+    this.touchEndY = y;
   }
 
   private processPointerMove(): void {
