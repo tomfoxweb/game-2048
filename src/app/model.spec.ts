@@ -1183,6 +1183,31 @@ describe('Model: shift', () => {
       ],
       gameOver: true,
     },
+    {
+      title: 'shift left combine game over',
+      fnName: 'left',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 1, column: 2 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 1, column: 3 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 64, 16, 128],
+        [8, 0, 0, 256],
+        [16, 32, 64, 8],
+        [32, 8, 16, 64],
+      ],
+      gameMapAfterShift: [
+        [4, 64, 16, 128],
+        [8, 4, 256, 2],
+        [16, 32, 64, 8],
+        [32, 8, 16, 64],
+      ],
+      gameOver: true,
+    },
   ];
 
   beforeEach(() => {
