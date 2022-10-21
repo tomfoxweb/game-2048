@@ -1083,6 +1083,31 @@ describe('Model: shift', () => {
         [2, 16, 2, 8],
       ],
     },
+    {
+      title: 'shift left game over',
+      fnName: 'left',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 1, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 64, 16, 128],
+        [8, 0, 0, 256],
+        [16, 32, 64, 8],
+        [32, 8, 16, 64],
+      ],
+      gameMapAfterShift: [
+        [4, 64, 16, 128],
+        [8, 2, 4, 256],
+        [16, 32, 64, 8],
+        [32, 8, 16, 64],
+      ],
+      gameOver: true,
+    },
   ];
 
   beforeEach(() => {
