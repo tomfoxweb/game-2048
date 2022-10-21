@@ -29,8 +29,26 @@ export class AppComponent implements OnInit, Viewable {
     this.controller.shiftLeft();
   }
 
+  @HostListener('window:pointerdown', ['$event'])
+  handlePointerDown(event: PointerEvent) {
+    event.preventDefault();
+    this.setStartTouchPosition(event);
+  }
+
+  @HostListener('window:pointerup', ['$event'])
+  handlePointerUp(event: PointerEvent) {
+    event.preventDefault();
+    this.setEndTouchPosition(event);
+    this.processPointerMove();
+  }
+
   title = 'game-2048';
   cells: Cell[] = [];
+
+  private touchStartX = 0;
+  private touchStartY = 0;
+  private touchEndX = 0;
+  private touchEndY = 0;
 
   constructor(private controller: ControllerService) {}
 
@@ -57,5 +75,36 @@ export class AppComponent implements OnInit, Viewable {
     window.setTimeout(() => {
       alert('Game Over!');
     }, 100);
+  }
+
+  private setStartTouchPosition(event: PointerEvent): void {
+    this.touchStartX = event.clientX;
+    this.touchStartY = event.clientY;
+  }
+
+  private setEndTouchPosition(event: PointerEvent): void {
+    this.touchEndX = event.clientX;
+    this.touchEndY = event.clientY;
+  }
+
+  private processPointerMove(): void {
+    const sx = Math.abs(this.touchEndX - this.touchStartX);
+    const sy = Math.abs(this.touchEndY - this.touchStartY);
+    if (sx + sy < 50) {
+      return;
+    }
+    if (sx > sy) {
+      if (this.touchEndX > this.touchStartX) {
+        this.controller.shiftRight();
+      } else {
+        this.controller.shiftLeft();
+      }
+    } else {
+      if (this.touchEndY > this.touchStartY) {
+        this.controller.shiftDown();
+      } else {
+        this.controller.shiftUp();
+      }
+    }
   }
 }
