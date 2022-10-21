@@ -982,6 +982,30 @@ describe('Model: shift', () => {
         [64, 0, 0, 0],
       ],
     },
+    {
+      title: 'shift left combine one new cell',
+      fnName: 'left',
+      newCellsNewGame: [
+        { position: { row: 0, column: 3 }, newCell: 4 },
+        { position: { row: 2, column: 1 }, newCell: 2 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 0, column: 3 }, newCell: 4 },
+        { position: { row: 1, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [2, 16, 4, 0],
+        [2, 128, 2, 64],
+        [16, 0, 4, 2],
+        [2, 16, 2, 8],
+      ],
+      gameMapAfterShift: [
+        [2, 16, 8, 4],
+        [2, 128, 2, 64],
+        [16, 2, 4, 2],
+        [2, 16, 2, 8],
+      ],
+    },
   ];
 
   beforeEach(() => {
