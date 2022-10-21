@@ -201,13 +201,13 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 2, column: 2 }, newCell: 2 },
-        { position: { row: 3, column: 3 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapAfterShift: [
         [0, 2, 4, 0],
         [0, 0, 0, 0],
         [0, 0, 2, 0],
-        [0, 0, 0, 2],
+        [0, 0, 0, 0],
       ],
     },
     {
@@ -219,7 +219,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 4 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [32, 0, 0, 2],
@@ -231,7 +231,7 @@ describe('Model: shift', () => {
         [32, 2, 4, 2],
         [16, 0, 0, 8],
         [2, 0, 0, 4],
-        [8, 2, 4, 8],
+        [8, 2, 0, 8],
       ],
     },
     {
@@ -243,7 +243,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 2, column: 0 }, newCell: 2 },
-        { position: { row: 3, column: 3 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapAfterShift: [
         [0, 2, 2, 0],
@@ -261,7 +261,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 2, column: 0 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [0, 0, 16, 0],
@@ -273,7 +273,7 @@ describe('Model: shift', () => {
         [32, 2, 16, 512],
         [16, 4, 4, 1024],
         [2, 8, 0, 0],
-        [0, 0, 2, 0],
+        [0, 0, 0, 0],
       ],
     },
     {
@@ -285,7 +285,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 2, column: 0 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [2, 32, 16, 8],
@@ -309,7 +309,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 3 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 32, 16, 0],
@@ -333,12 +333,12 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 1, column: 3 }, newCell: 2 },
-        { position: { row: 2, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapAfterShift: [
         [0, 4, 0, 0],
         [0, 0, 0, 2],
-        [0, 0, 2, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 0],
       ],
     },
@@ -351,12 +351,12 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 1, column: 1 }, newCell: 4 },
-        { position: { row: 2, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapAfterShift: [
         [0, 0, 0, 8],
         [0, 4, 0, 0],
-        [0, 4, 0, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 0],
       ],
     },
@@ -369,7 +369,8 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 2 },
+
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 2, 2, 2],
@@ -381,7 +382,7 @@ describe('Model: shift', () => {
         [4, 2, 2, 2],
         [8, 32, 16, 128],
         [32, 4, 8, 4],
-        [16, 2, 2, 128],
+        [16, 2, 0, 128],
       ],
     },
     {
@@ -393,7 +394,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 2 },
-        { position: { row: 3, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 2, 2, 2],
@@ -417,18 +418,19 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 4 },
-        { position: { row: 2, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
+
       gameMapPreload: [
-        [4, 2, 2, 0],
-        [8, 0, 4, 128],
-        [8, 4, 0, 0],
-        [16, 32, 0, 128],
+        [8, 2, 2, 0],
+        [8, 0, 4, 2],
+        [8, 4, 0, 2],
+        [16, 32, 0, 2],
       ],
       gameMapAfterShift: [
-        [4, 8, 2, 256],
-        [32, 32, 8, 0],
-        [0, 0, 2, 0],
+        [16, 4, 2, 4],
+        [8, 4, 8, 2],
+        [16, 32, 0, 0],
         [0, 4, 0, 0],
       ],
     },
@@ -441,7 +443,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 4 },
-        { position: { row: 2, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 8, 16, 2],
@@ -466,7 +468,7 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 3, column: 1 }, newCell: 2 },
-        { position: { row: 2, column: 2 }, newCell: 2 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 8, 16, 2],
@@ -491,11 +493,11 @@ describe('Model: shift', () => {
       ],
       newCellsAfterShift: [
         { position: { row: 0, column: 0 }, newCell: 4 },
-        { position: { row: 1, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 0 }, newCell: 2 },
       ],
       gameMapAfterShift: [
         [4, 0, 0, 0],
-        [0, 4, 0, 2],
+        [0, 0, 0, 2],
         [0, 0, 0, 4],
         [0, 0, 0, 0],
       ],
@@ -520,7 +522,7 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [32, 16, 8, 64],
         [0, 0, 4, 2],
-        [2, 0, 0, 4],
+        [0, 0, 0, 4],
         [8, 64, 128, 8],
       ],
     },
@@ -561,7 +563,7 @@ describe('Model: shift', () => {
       ],
       gameMapAfterShift: [
         [2, 0, 32, 8],
-        [4, 8, 2, 64],
+        [0, 8, 2, 64],
         [0, 128, 16, 4],
         [0, 2, 256, 128],
       ],
@@ -628,7 +630,7 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [0, 0, 0, 0],
         [0, 0, 2, 8],
-        [0, 2, 0, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 0],
       ],
     },
@@ -646,7 +648,7 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
-        [0, 4, 2, 4],
+        [0, 4, 0, 4],
         [0, 0, 0, 0],
       ],
     },
@@ -658,20 +660,20 @@ describe('Model: shift', () => {
         { position: { row: 2, column: 0 }, newCell: 4 },
       ],
       newCellsAfterShift: [
-        { position: { row: 0, column: 2 }, newCell: 4 },
+        { position: { row: 0, column: 0 }, newCell: 4 },
         { position: { row: 2, column: 1 }, newCell: 2 },
       ],
       gameMapPreload: [
         [4, 0, 2, 8],
-        [8, 4, 8, 8],
+        [32, 8, 8, 8],
         [0, 2, 2, 8],
         [16, 8, 8, 64],
       ],
       gameMapAfterShift: [
-        [0, 0, 4, 16],
-        [0, 8, 4, 16],
-        [0, 2, 0, 16],
-        [0, 0, 32, 64],
+        [4, 4, 4, 8],
+        [0, 32, 8, 16],
+        [0, 4, 4, 8],
+        [0, 16, 16, 64],
       ],
     },
     {
@@ -761,7 +763,7 @@ describe('Model: shift', () => {
       ],
       gameMapAfterShift: [
         [0, 0, 0, 4],
-        [2, 0, 0, 0],
+        [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 2, 4, 0],
       ],
@@ -785,7 +787,7 @@ describe('Model: shift', () => {
       ],
       gameMapAfterShift: [
         [32, 4, 0, 512],
-        [64, 0, 2, 128],
+        [64, 0, 0, 128],
         [16, 0, 0, 64],
         [8, 2, 4, 16],
       ],
@@ -826,7 +828,7 @@ describe('Model: shift', () => {
         [8, 0, 16, 32],
       ],
       gameMapAfterShift: [
-        [0, 2, 0, 0],
+        [0, 0, 0, 0],
         [8, 128, 0, 4],
         [2, 2, 4, 256],
         [8, 64, 16, 32],
@@ -892,16 +894,16 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 0 }, newCell: 4 },
       ],
       gameMapPreload: [
-        [4, 0, 256, 2],
+        [4, 0, 256, 0],
         [4, 2, 64, 2],
         [0, 2, 64, 0],
         [8, 16, 128, 2],
       ],
       gameMapAfterShift: [
         [0, 0, 2, 0],
-        [4, 0, 0, 0],
-        [0, 8, 0, 0],
-        [16, 16, 512, 8],
+        [0, 4, 256, 0],
+        [8, 4, 128, 2],
+        [8, 16, 128, 4],
       ],
     },
     {
@@ -992,7 +994,7 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [0, 0, 0, 0],
         [2, 0, 4, 0],
-        [4, 0, 2, 0],
+        [4, 0, 0, 0],
         [0, 0, 0, 0],
       ],
     },
@@ -1016,7 +1018,7 @@ describe('Model: shift', () => {
       gameMapAfterShift: [
         [32, 16, 8, 64],
         [2, 0, 0, 4],
-        [4, 2, 0, 0],
+        [4, 0, 0, 0],
         [8, 128, 32, 16],
       ],
     },
@@ -1059,7 +1061,7 @@ describe('Model: shift', () => {
         [2, 4, 0, 0],
         [2, 16, 0, 0],
         [64, 4, 32, 2],
-        [1024, 0, 0, 4],
+        [1024, 0, 0, 0],
       ],
     },
     {
@@ -1122,16 +1124,16 @@ describe('Model: shift', () => {
         { position: { row: 1, column: 2 }, newCell: 2 },
       ],
       gameMapPreload: [
-        [16, 8, 4, 0],
+        [16, 4, 4, 0],
         [256, 128, 64, 64],
-        [8, 0, 2, 4],
+        [2, 0, 2, 4],
         [32, 16, 8, 8],
       ],
       gameMapAfterShift: [
-        [32, 0, 0, 2],
-        [512, 0, 2, 0],
-        [16, 0, 0, 0],
-        [64, 0, 0, 0],
+        [16, 8, 4, 2],
+        [256, 128, 128, 0],
+        [4, 2, 4, 0],
+        [32, 16, 16, 0],
       ],
     },
     {
