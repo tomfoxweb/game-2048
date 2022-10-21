@@ -17,6 +17,7 @@ export class Model {
   private randomizer: Randomable;
   private cellMap: GameMap;
   private emptyPositions: Position[];
+  private cellsHaveMoved: boolean;
 
   constructor(view: Viewable, randomizer: Randomable) {
     this.view = view;
@@ -28,6 +29,7 @@ export class Model {
       [0, 0, 0, 0],
     ];
     this.emptyPositions = [];
+    this.cellsHaveMoved = false;
   }
 
   newGame(
@@ -47,6 +49,7 @@ export class Model {
         }
       }
     }
+    this.cellsHaveMoved = false;
     this.addNewCellOnMap();
     this.addNewCellOnMap();
     this.showGameMap();
@@ -66,10 +69,10 @@ export class Model {
   }
 
   private addToEmptyPositions(position: Position): void {
-    const found = this.emptyPositions.find(
+    const pos = this.emptyPositions.find(
       (x) => x.row === position.row && x.column === position.column
     );
-    if (found === undefined) {
+    if (pos === undefined) {
       this.emptyPositions.push({ ...position });
     }
   }
@@ -171,7 +174,18 @@ export class Model {
   }
 
   shiftUp(): void {
-    let hasMoved = false;
+    this.cellsHaveMoved = false;
+    this.shiftCellsUp();
+    this.combineCellsUp();
+    this.shiftCellsUp();
+    if (this.cellsHaveMoved) {
+      this.addNewCellOnMap();
+    }
+    this.showGameMap();
+    this.checkForGameOver();
+  }
+
+  private shiftCellsUp(): void {
     for (const column of ColumnValues) {
       for (const row1 of RowValues) {
         if (this.cellMap[row1][column] !== 0) {
@@ -179,7 +193,7 @@ export class Model {
         }
         for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
           if (this.cellMap[row2][column] !== 0) {
-            hasMoved = true;
+            this.cellsHaveMoved = true;
             this.cellMap[row1][column] = this.cellMap[row2][column];
             this.removeFromEmptyPositions({ row: row1, column: column });
             this.cellMap[row2][column] = 0;
@@ -189,6 +203,9 @@ export class Model {
         }
       }
     }
+  }
+
+  private combineCellsUp(): void {
     for (const column of ColumnValues) {
       for (let row = 0; row < ROW_COUNT - 1; row++) {
         const firstCell = this.cellMap[row][column];
@@ -197,39 +214,28 @@ export class Model {
         }
         const secondCell = this.cellMap[row + 1][column];
         if (firstCell === secondCell) {
-          hasMoved = true;
+          this.cellsHaveMoved = true;
           this.cellMap[row][column] = (firstCell * 2) as Cell;
           this.cellMap[row + 1][column] = 0;
           this.addToEmptyPositions({ row: (row + 1) as Row, column: column });
         }
       }
     }
-    for (const column of ColumnValues) {
-      for (const row1 of RowValues) {
-        if (this.cellMap[row1][column] !== 0) {
-          continue;
-        }
-        for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
-          if (this.cellMap[row2][column] !== 0) {
-            hasMoved = true;
-            this.cellMap[row1][column] = this.cellMap[row2][column];
-            this.removeFromEmptyPositions({ row: row1, column: column });
-            this.cellMap[row2][column] = 0;
-            this.addToEmptyPositions({ row: row2 as Row, column: column });
-            break;
-          }
-        }
-      }
-    }
-    if (hasMoved) {
+  }
+
+  shiftRight(): void {
+    this.cellsHaveMoved = false;
+    this.shiftCellsRight();
+    this.combineCellsRight();
+    this.shiftCellsRight();
+    if (this.cellsHaveMoved) {
       this.addNewCellOnMap();
     }
     this.showGameMap();
     this.checkForGameOver();
   }
 
-  shiftRight() {
-    let hasMoved = false;
+  private shiftCellsRight(): void {
     for (const row of RowValues) {
       for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
         if (this.cellMap[row][col1] !== 0) {
@@ -237,7 +243,7 @@ export class Model {
         }
         for (let col2 = col1 - 1; col2 >= 0; col2--) {
           if (this.cellMap[row][col2] !== 0) {
-            hasMoved = true;
+            this.cellsHaveMoved = true;
             this.cellMap[row][col1] = this.cellMap[row][col2];
             this.removeFromEmptyPositions({
               row: row,
@@ -250,6 +256,9 @@ export class Model {
         }
       }
     }
+  }
+
+  private combineCellsRight(): void {
     for (const row of RowValues) {
       for (let column = COLUMN_COUNT - 1; column > 0; column--) {
         const firstCell = this.cellMap[row][column];
@@ -258,7 +267,7 @@ export class Model {
         }
         const secondCell = this.cellMap[row][column - 1];
         if (firstCell === secondCell) {
-          hasMoved = true;
+          this.cellsHaveMoved = true;
           this.cellMap[row][column] = (firstCell * 2) as Cell;
           this.cellMap[row][column - 1] = 0;
           this.addToEmptyPositions({
@@ -268,35 +277,21 @@ export class Model {
         }
       }
     }
-    for (const row of RowValues) {
-      for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
-        if (this.cellMap[row][col1] !== 0) {
-          continue;
-        }
-        for (let col2 = col1 - 1; col2 >= 0; col2--) {
-          if (this.cellMap[row][col2] !== 0) {
-            hasMoved = true;
-            this.cellMap[row][col1] = this.cellMap[row][col2];
-            this.removeFromEmptyPositions({
-              row: row,
-              column: col1 as Column,
-            });
-            this.cellMap[row][col2] = 0;
-            this.addToEmptyPositions({ row: row, column: col2 as Column });
-            break;
-          }
-        }
-      }
-    }
-    if (hasMoved) {
+  }
+
+  shiftDown(): void {
+    this.cellsHaveMoved = false;
+    this.shiftCellsDown();
+    this.combineCellsDown();
+    this.shiftCellsDown();
+    if (this.cellsHaveMoved) {
       this.addNewCellOnMap();
     }
     this.showGameMap();
     this.checkForGameOver();
   }
 
-  shiftDown() {
-    let hasMoved = false;
+  private shiftCellsDown(): void {
     for (const column of ColumnValues) {
       for (let row1 = ROW_COUNT - 1; row1 > 0; row1--) {
         if (this.cellMap[row1][column] !== 0) {
@@ -304,7 +299,7 @@ export class Model {
         }
         for (let row2 = row1 - 1; row2 >= 0; row2--) {
           if (this.cellMap[row2][column] !== 0) {
-            hasMoved = true;
+            this.cellsHaveMoved = true;
             this.cellMap[row1][column] = this.cellMap[row2][column];
             this.removeFromEmptyPositions({
               row: row1 as Row,
@@ -317,6 +312,9 @@ export class Model {
         }
       }
     }
+  }
+
+  private combineCellsDown(): void {
     for (const column of ColumnValues) {
       for (let row = ROW_COUNT - 1; row > 0; row--) {
         const firstCell = this.cellMap[row][column];
@@ -325,42 +323,28 @@ export class Model {
         }
         const secondCell = this.cellMap[row - 1][column];
         if (firstCell === secondCell) {
-          hasMoved = true;
+          this.cellsHaveMoved = true;
           this.cellMap[row][column] = (firstCell * 2) as Cell;
           this.cellMap[row - 1][column] = 0;
           this.addToEmptyPositions({ row: (row - 1) as Row, column: column });
         }
       }
     }
-    for (const column of ColumnValues) {
-      for (let row1 = ROW_COUNT - 1; row1 > 0; row1--) {
-        if (this.cellMap[row1][column] !== 0) {
-          continue;
-        }
-        for (let row2 = row1 - 1; row2 >= 0; row2--) {
-          if (this.cellMap[row2][column] !== 0) {
-            hasMoved = true;
-            this.cellMap[row1][column] = this.cellMap[row2][column];
-            this.removeFromEmptyPositions({
-              row: row1 as Row,
-              column: column,
-            });
-            this.cellMap[row2][column] = 0;
-            this.addToEmptyPositions({ row: row2 as Row, column: column });
-            break;
-          }
-        }
-      }
-    }
-    if (hasMoved) {
+  }
+
+  shiftLeft(): void {
+    this.cellsHaveMoved = false;
+    this.shiftCellsLeft();
+    this.combineCellsLeft();
+    this.shiftCellsLeft();
+    if (this.cellsHaveMoved) {
       this.addNewCellOnMap();
     }
     this.showGameMap();
     this.checkForGameOver();
   }
 
-  shiftLeft() {
-    let hasMoved = false;
+  private shiftCellsLeft(): void {
     for (const row of RowValues) {
       for (let col1 = 0; col1 < COLUMN_COUNT - 1; col1++) {
         if (this.cellMap[row][col1] !== 0) {
@@ -368,7 +352,7 @@ export class Model {
         }
         for (let col2 = col1 + 1; col2 < COLUMN_COUNT; col2++) {
           if (this.cellMap[row][col2] !== 0) {
-            hasMoved = true;
+            this.cellsHaveMoved = true;
             this.cellMap[row][col1] = this.cellMap[row][col2];
             this.removeFromEmptyPositions({
               row: row,
@@ -381,6 +365,9 @@ export class Model {
         }
       }
     }
+  }
+
+  private combineCellsLeft(): void {
     for (const row of RowValues) {
       for (let column = 0; column < COLUMN_COUNT - 1; column++) {
         const firstCell = this.cellMap[row][column];
@@ -389,7 +376,7 @@ export class Model {
         }
         const secondCell = this.cellMap[row][column + 1];
         if (firstCell === secondCell) {
-          hasMoved = true;
+          this.cellsHaveMoved = true;
           this.cellMap[row][column] = (firstCell * 2) as Cell;
           this.cellMap[row][column + 1] = 0;
           this.addToEmptyPositions({
@@ -399,30 +386,5 @@ export class Model {
         }
       }
     }
-    for (const row of RowValues) {
-      for (let col1 = 0; col1 < COLUMN_COUNT - 1; col1++) {
-        if (this.cellMap[row][col1] !== 0) {
-          continue;
-        }
-        for (let col2 = col1 + 1; col2 < COLUMN_COUNT; col2++) {
-          if (this.cellMap[row][col2] !== 0) {
-            hasMoved = true;
-            this.cellMap[row][col1] = this.cellMap[row][col2];
-            this.removeFromEmptyPositions({
-              row: row,
-              column: col1 as Column,
-            });
-            this.cellMap[row][col2] = 0;
-            this.addToEmptyPositions({ row: row, column: col2 as Column });
-            break;
-          }
-        }
-      }
-    }
-    if (hasMoved) {
-      this.addNewCellOnMap();
-    }
-    this.showGameMap();
-    this.checkForGameOver();
   }
 }
