@@ -100,23 +100,43 @@ export class Model {
 
   shiftUp(): void {
     let hasMoved = false;
-    for (const column of ColumnValues) {
-      for (const row1 of RowValues) {
-        if (this.cellMap[row1][column] !== 0) {
-          continue;
-        }
-        for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
-          if (this.cellMap[row2][column] !== 0) {
-            hasMoved = true;
-            this.cellMap[row1][column] = this.cellMap[row2][column];
-            this.removeFromEmptyPositions({ row: row1, column: column });
-            this.cellMap[row2][column] = 0;
-            this.addToEmptyPositions({ row: row2 as Row, column: column });
-            break;
+    let hasCombined = false;
+    do {
+      for (const column of ColumnValues) {
+        for (const row1 of RowValues) {
+          if (this.cellMap[row1][column] !== 0) {
+            continue;
+          }
+          for (let row2 = row1 + 1; row2 < ROW_COUNT; row2++) {
+            if (this.cellMap[row2][column] !== 0) {
+              hasMoved = true;
+              this.cellMap[row1][column] = this.cellMap[row2][column];
+              this.removeFromEmptyPositions({ row: row1, column: column });
+              this.cellMap[row2][column] = 0;
+              this.addToEmptyPositions({ row: row2 as Row, column: column });
+              break;
+            }
           }
         }
       }
-    }
+      hasCombined = false;
+      for (const column of ColumnValues) {
+        for (let row = 0; row < ROW_COUNT - 1; row++) {
+          const firstCell = this.cellMap[row][column];
+          if (firstCell === 0) {
+            continue;
+          }
+          const secondCell = this.cellMap[row + 1][column];
+          if (firstCell === secondCell) {
+            hasMoved = true;
+            hasCombined = true;
+            this.cellMap[row][column] = (firstCell * 2) as Cell;
+            this.cellMap[row + 1][column] = 0;
+            this.addToEmptyPositions({ row: (row + 1) as Row, column: column });
+          }
+        }
+      }
+    } while (hasCombined);
     if (hasMoved) {
       this.addNewCellOnMap();
       this.addNewCellOnMap();
