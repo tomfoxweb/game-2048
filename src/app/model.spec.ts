@@ -359,6 +359,30 @@ describe('Model: shift', () => {
       ],
     },
     {
+      title: 'shift up preload move -> combine',
+      fnName: 'up',
+      newCellsNewGame: [
+        { position: { row: 1, column: 1 }, newCell: 2 },
+        { position: { row: 2, column: 2 }, newCell: 4 },
+      ],
+      newCellsAfterShift: [
+        { position: { row: 3, column: 1 }, newCell: 4 },
+        { position: { row: 2, column: 2 }, newCell: 2 },
+      ],
+      gameMapPreload: [
+        [4, 2, 2, 0],
+        [8, 0, 4, 128],
+        [8, 4, 0, 0],
+        [16, 32, 0, 128],
+      ],
+      gameMapAfterShift: [
+        [4, 8, 2, 256],
+        [32, 32, 8, 0],
+        [0, 0, 2, 0],
+        [0, 4, 0, 0],
+      ],
+    },
+    {
       title: 'shift right',
       fnName: 'right',
       newCellsNewGame: [
