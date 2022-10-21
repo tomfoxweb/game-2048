@@ -147,23 +147,49 @@ export class Model {
 
   shiftRight() {
     let hasMoved = false;
-    for (const row of RowValues) {
-      for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
-        if (this.cellMap[row][col1] !== 0) {
-          continue;
-        }
-        for (let col2 = col1 - 1; col2 >= 0; col2--) {
-          if (this.cellMap[row][col2] !== 0) {
-            hasMoved = true;
-            this.cellMap[row][col1] = this.cellMap[row][col2];
-            this.removeFromEmptyPositions({ row: row, column: col1 as Column });
-            this.cellMap[row][col2] = 0;
-            this.addToEmptyPositions({ row: row, column: col2 as Column });
-            break;
+    let hasCombined = false;
+    do {
+      for (const row of RowValues) {
+        for (let col1 = COLUMN_COUNT - 1; col1 > 0; col1--) {
+          if (this.cellMap[row][col1] !== 0) {
+            continue;
+          }
+          for (let col2 = col1 - 1; col2 >= 0; col2--) {
+            if (this.cellMap[row][col2] !== 0) {
+              hasMoved = true;
+              this.cellMap[row][col1] = this.cellMap[row][col2];
+              this.removeFromEmptyPositions({
+                row: row,
+                column: col1 as Column,
+              });
+              this.cellMap[row][col2] = 0;
+              this.addToEmptyPositions({ row: row, column: col2 as Column });
+              break;
+            }
           }
         }
       }
-    }
+      hasCombined = false;
+      for (const row of RowValues) {
+        for (let column = COLUMN_COUNT - 1; column > 0; column--) {
+          const firstCell = this.cellMap[row][column];
+          if (firstCell === 0) {
+            continue;
+          }
+          const secondCell = this.cellMap[row][column - 1];
+          if (firstCell === secondCell) {
+            hasMoved = true;
+            hasCombined = true;
+            this.cellMap[row][column] = (firstCell * 2) as Cell;
+            this.cellMap[row][column - 1] = 0;
+            this.addToEmptyPositions({
+              row: row,
+              column: (column - 1) as Column,
+            });
+          }
+        }
+      }
+    } while (hasCombined);
     if (hasMoved) {
       this.addNewCellOnMap();
       this.addNewCellOnMap();
